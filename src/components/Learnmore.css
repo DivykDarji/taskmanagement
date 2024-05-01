@@ -1,35 +1,35 @@
+/* Learnmore.css */
 .learn-more-container {
   position: relative;
   z-index: 10;
-  color: #fff;
-  max-width: 800px; /* Increased max-width for better readability */
+  color: #333; /* Dark text color */
+  max-width: 800px;
   margin: 0 auto;
-  padding: 40px; /* Increased padding for a more spacious feel */
+  padding: 40px;
   text-align: center;
- 
 }
 
 .learn-more-container h2 {
-  font-size: 42px; /* Larger heading for emphasis */
-  margin-bottom: 30px; /* Increased margin for spacing */
-  color: #fbfcfb; /* Green text color */
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #222; /* Slightly darker heading color */
 }
 
 .learn-more-container p {
-  font-size: 20px; /* Slightly larger font size for better readability */
-  line-height: 1.8;
-  margin-bottom: 20px; /* Increased margin for spacing */
-  color: #fffefe;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #444; /* Slightly darker text color */
 }
 
 .learn-more-container a {
-  color: #fcfcfc; /* Blue link color */
+  color: #007bff; /* Blue link color */
   text-decoration: none;
-  transition: color 0.3s ease; /* Smooth color transition */
+  transition: color 0.3s ease;
 }
 
 .learn-more-container a:hover {
-  color: #504a4a; /* Darker blue color on hover */
+  color: #0056b3; /* Darker blue color on hover */
   text-decoration: underline;
 }
 

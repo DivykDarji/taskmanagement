@@ -1,11 +1,11 @@
-// src/components/LearnMore.js
+// LearnMore.js
 import React from "react";
 import "./Learnmore.css";
 
 const Learnmore = () => {
   return (
     <div className="learn-more-container">
-      <h2>Learn More </h2>
+      <h2>Learn More</h2>
       <p>
         Welcome to the Learn More page! Here, you can explore more about our
         website and discover exciting features and content. Whether you're

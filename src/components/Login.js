@@ -236,7 +236,7 @@ const Login = () => {
           />
 
           <button type="submit" disabled={loading}>
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? 'Logging ...' : 'Log In'}
           </button>
         </form>
       )}

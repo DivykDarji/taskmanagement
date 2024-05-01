@@ -2,16 +2,19 @@
 
 .signup-container {
   max-width: 400px;
-  margin: 0 auto;
+  margin: 50px auto; /* Centering the signup container vertically */
   padding: 20px;
   position: relative; /* Ensure the position is relative for z-index to work */
   z-index: 10; /* Set a higher value than the z-index of .box */
+  background-color: #fff; /* Background color */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
 }
 
 .signup-container h2 {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #fff;
+  color: #000; /* Text color */
 }
 
 .signup-container form {
@@ -22,20 +25,22 @@
 
 .signup-container label {
   margin-bottom: 8px;
-  font-size: 14px;
-  color: #fff9f9;
+  font-size: 16px;
+  color: #000; /* Text color */
 }
 
 .signup-container input {
-  padding: 8px;
+  padding: 10px;
   margin-bottom: 16px;
   width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .signup-container button {
   background-color: #000000;
   color: #fff;
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
   border: none;
   border-radius: 4px;
@@ -58,17 +63,14 @@
   right: -50%;
   transform: translateX(50%);
   text-align: center;
-  font-size: 20px;
-  color: #fff ; /* Add !important to override other styles */
+  font-size: 16px;
+  color: #fff; /* Text color */
 }
 
 .message.success-message {
   background-color: #4caf50; /* Green background for success message */
-  color: #fff; /* White text color for success message */
-
 }
 
 .message.error-message {
   background-color: #f44336; /* Red background for error message */
-  color: #fff; /* White text color for error message */
 }

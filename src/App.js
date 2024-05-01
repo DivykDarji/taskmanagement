@@ -11,6 +11,8 @@ import Learnmore from "./components/Learnmore";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import ThankYouSignup from "./components/Thankyou";
+import UserManagement from "./components/Usermanagement";
+
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
           <Route path="/learnmore" element={<React.Fragment><Header /><Learnmore /></React.Fragment>} />
           <Route path="/thankyou-signup/:username" element={<ThankYouSignup />} />
           <Route path="/home" element={<Banner />} />
+          <Route path="/user-management" element={<UserManagement />} />
           <Route path="/" element={<Banner />} />
          
           

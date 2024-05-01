@@ -1,12 +1,10 @@
 /* Thankyou.css */
+
 .thankyou-container {
-    margin: 20px; /* Add some margin to the container for visibility */
-    padding: 20px;
-    border: 1px solid #4d4949; /* Add a border for better visibility */
-    color: #ccc;
-    position: relative;
-    z-index: 10;
-    
-    
-  }
-  
+  margin: 20px; /* Add some margin to the container for visibility */
+  padding: 20px;
+  background-color: #f9f9f9; /* Light gray background */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+  color: #333; /* Dark text color */
+}

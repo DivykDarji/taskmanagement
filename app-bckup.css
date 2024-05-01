@@ -1,0 +1,219 @@
+
+.wrapper {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    background-color: #fff; /* Add a background color */
+  }
+  
+  
+  .box {
+    position: absolute;
+    width: 100%;
+    overflow: hidden;
+    height: 100%;
+    bottom: -1px;
+    background: linear-gradient(to bottom, #ee0979, #ff6a00);
+    /* background: linear-gradient(to bottom, #ff4e50, #f9d423); */
+    /* background: linear-gradient(to bottom, #333333, #1a1a1a); */
+  
+    z-index: 5;
+  }
+  
+  ul {
+    z-index: 99;
+    list-style: none;
+    text-align: center;
+    position: fixed;
+    margin: auto;
+    width: 95%;
+  }
+  
+  ul li {
+    display: inline-block;
+    margin: 15px;
+  }
+  
+  ul li a {
+    text-decoration: none;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 20px;
+  }
+  
+  .logo {
+    font-size: 25px;
+    text-transform: uppercase;
+    font-weight: 900;
+    color: #fff;
+  }
+  
+  .banner {
+    position: absolute;
+    z-index: 99;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    text-align: center;
+  }
+  
+  .banner h2 {
+    color: #fff;
+    font-size: 50px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+  }
+  
+  .banner p {
+    color: #fff;
+    font-size: 18px;
+    line-height: 1.9;
+  }
+  
+  .banner a {
+    text-decoration: none;
+    background: #000;
+    color: #fff;
+    padding: 10px 30px;
+    display: inline-block;
+  }
+  
+  .banner button {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 30px;
+    border: none;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Add a smooth transition */
+  }
+  
+  .banner button:hover {
+    background-color: #fff; /* Change to your desired hover background color */
+    color: #000; /* Change to your desired hover text color */
+  }
+  
+  .single-box {
+    position: absolute;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background-repeat: repeat no-repeat;
+    background-position: 0 bottom;
+    transform-origin: center bottom;
+    background-size: 50% 80px;
+    animation: animate 18s linear infinite;
+  }
+  
+  .wrapper ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .wrapper li {
+    display: inline-block;
+    margin-right: 20px;
+  }
+  
+  .wrapper li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+  
+  .wrapper li a:hover {
+    color: black;
+  }
+  
+  @keyframes animate {
+    0% {
+      transform: translateX(0) translateZ(0) scaleY(1);
+    }
+    50% {
+      transform: translateX(-25%) translateZ(0) scaleY(0.55)
+    }
+    100% {
+      transform: translateX(-50%) translateZ(0) scaleY(1)
+    }
+  }
+  
+  .contact-icons {
+    background-color: transparent;
+  }
+  
+  .contact-icons a {
+    background-color: transparent;
+    color: #fff; /* Set the color for the icons */
+    margin-right: 10px; /* Add some spacing between the icons */
+  }
+  
+  .contact-icons a:hover {
+    color: #ccc; /* Set the color for the icons on hover */
+  }
+
+  
+Remove the background color gradient from the box class
+.box {
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+  bottom: -1px;
+  z-index: 5;
+}
+
+/* Update the wrapper class to set the background color to white */
+.wrapper {
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+  background-color: #fff; /* Set background color to white */
+}
+
+/* Update the banner class to adjust text color */
+.banner {
+  position: absolute;
+  z-index: 99;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  text-align: center;
+  color: #000; /* Set text color to black */
+}
+
+/* Update the banner button styles */
+.banner button {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 30px;
+  border: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.banner button:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+/* Remove the wave animation */
+.single-box {
+  display: none;
+}
+
+/* Adjust the color of the links in the wrapper */
+.wrapper li a {
+  color: #000; /* Set link color to black */
+}
+
+.wrapper li a:hover {
+  color: #666; /* Set link hover color */
+}
