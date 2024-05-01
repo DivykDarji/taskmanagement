@@ -1,24 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Banner from "./components/Banner";
+import Box from "./components/Box";
+import Signup from "./components/Signup";
+import Header from "./components/Header";
+import "./App.css";
+import Contact from "./components/Contact";
+import Learnmore from "./components/Learnmore";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import ThankYouSignup from "./components/Thankyou";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="wrapper">
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard/:username" element={<Dashboard />} />
+          <Route path="/learnmore" element={<React.Fragment><Header /><Learnmore /></React.Fragment>} />
+          <Route path="/thankyou-signup/:username" element={<ThankYouSignup />} />
+          <Route path="/home" element={<Banner />} />
+          <Route path="/" element={<Banner />} />
+         
+          
+        </Routes>
+        <Box />
+      </div>
+    </Router>
   );
 }
 

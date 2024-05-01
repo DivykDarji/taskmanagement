@@ -1,0 +1,38 @@
+.learn-more-container {
+  position: relative;
+  z-index: 10;
+  color: #fff;
+  max-width: 800px; /* Increased max-width for better readability */
+  margin: 0 auto;
+  padding: 40px; /* Increased padding for a more spacious feel */
+  text-align: center;
+ 
+}
+
+.learn-more-container h2 {
+  font-size: 42px; /* Larger heading for emphasis */
+  margin-bottom: 30px; /* Increased margin for spacing */
+  color: #fbfcfb; /* Green text color */
+}
+
+.learn-more-container p {
+  font-size: 20px; /* Slightly larger font size for better readability */
+  line-height: 1.8;
+  margin-bottom: 20px; /* Increased margin for spacing */
+  color: #fffefe;
+}
+
+.learn-more-container a {
+  color: #fcfcfc; /* Blue link color */
+  text-decoration: none;
+  transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.learn-more-container a:hover {
+  color: #504a4a; /* Darker blue color on hover */
+  text-decoration: underline;
+}
+
+.learn-more-container p:last-child {
+  margin-bottom: 0;
+}

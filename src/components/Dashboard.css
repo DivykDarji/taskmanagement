@@ -1,0 +1,12 @@
+/* Dashboard.css */
+.dashboard-container {
+    margin: 20px; /* Add some margin to the container for visibility */
+    padding: 20px;
+    /*border: 1px solid #4d4949;  Add a border for better visibility */
+    color: #ccc;
+    position: relative;
+    z-index: 10;
+    
+    
+  }
+  

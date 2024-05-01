@@ -1,0 +1,40 @@
+/* Contact.css */
+.contact-container {
+  padding: 40px;
+  text-align: center;
+  color: #fff;
+  top: 40%;
+   left: 50%;
+  transform: translate(-50%, -50%);
+  position: relative;
+  z-index: 10;
+}
+
+h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  color: #ffffff; /* Highlight color for the title */
+}
+
+p {
+  font-size: 25px;
+  margin-bottom: 25px;
+  color: #d2b420; /* Highlight color for the title */
+}
+
+.contact-icons {
+  display: flex;
+  justify-content: center;
+}
+
+.contact-icons a {
+  margin: 0 15px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+.contact-icons a:hover {
+  color: #454442; /* Change the color on hover */
+}

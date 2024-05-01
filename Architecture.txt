@@ -1,0 +1,29 @@
+divy-portfolio-website/
+|-- models
+      |-- User.js
+|--node modules/
+|-- public/
+|   |-- index.html
+|-- src/
+      |-- Components/
+                   |--Banner.css
+                   |--Banner.js
+                   |--Box.js
+                   |--Contact.css
+                   |--Contact .jss
+                   |--Header.js
+                   |--Learnmore.css
+                   |--Learnmmore.js
+                   |--Login.css
+                   |--Login.js
+                   |--Signup.css
+                   |--Signup.js
+                   |--WaveBackground.css
+                   |--WaveBackground.js
+
+       |-- App.js
+       |-- App.css
+|-- routes
+     |--auth.js
+|-- package.json
+|-- server.js
