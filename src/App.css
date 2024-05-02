@@ -1,16 +1,8 @@
 /* app.css */
 
 /* Remove the background color gradient from the box class */
-.box {
-  position: absolute;
-  width: 100%;
-  overflow: hidden;
-  height: 100%;
-  bottom: -1px;
-  z-index: 5;
-}
 
-/* Update the wrapper class to set the background color to white */
+
 .wrapper {
   overflow-y: auto; /* Enable vertical scrolling */
   position: absolute;

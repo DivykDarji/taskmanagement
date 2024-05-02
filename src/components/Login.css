@@ -148,3 +148,22 @@
   cursor: pointer;
   font-size: 20px;
 }
+/* Custom styles for the sign-up link */
+.signup-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.signup-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 2px solid transparent; /* Add a transparent underline */
+  transition: border-color 0.3s ease; /* Smooth transition for the underline color */
+}
+
+.signup-link a:hover {
+  border-color: #007bff; /* Change the underline color on hover */
+}
+

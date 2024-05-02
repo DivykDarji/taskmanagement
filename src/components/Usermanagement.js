@@ -181,37 +181,25 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './UserManagement.css';
+import { Link } from 'react-router-dom';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    phonenumber: '',
-    password: '',
-  });
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [editUserId, setEditUserId] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/auth/users');
-        setUsers(response.data);
+        const response = await axios.get(`http://localhost:5000/auth/users?page=${currentPage}`);
+        setUsers(response.data.users);
+        setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     };
     fetchUsers();
-  }, []);
-
-  const handleEdit = (userId) => {
-    const userToEdit = users.find(user => user._id === userId);
-    setFormData(userToEdit);
-    setShowEditForm(true);
-    setEditUserId(userId);
-  };
+  }, [currentPage]);
 
   const handleDelete = async (userId) => {
     try {
@@ -222,26 +210,12 @@ const UserManagement = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
   };
 
-  const updateUser = async (event) => {
-    event.preventDefault();
-    try {
-      await axios.put(`http://localhost:5000/auth/users/${editUserId}`, formData);
-      const updatedUsers = users.map(user => {
-        if (user._id === editUserId) {
-          return { ...user, ...formData };
-        }
-        return user;
-      });
-      setUsers(updatedUsers);
-      setShowEditForm(false);
-    } catch (error) {
-      console.error('Error updating user:', error);
-    }
+  const handlePrevPage = () => {
+    setCurrentPage(currentPage - 1);
   };
 
   return (
@@ -254,29 +228,23 @@ const UserManagement = () => {
             <p>Email: {user.email}</p>
             <p>Phone Number: {user.phonenumber}</p>
             <div className="button-container">
-              <button className="button edit-button" onClick={() => handleEdit(user._id)}>Edit</button>
+              <button className="button edit-button"><Link to={`/edit-user/${user._id}`}>Edit</Link></button>
               <button className="button delete-button" onClick={() => handleDelete(user._id)}>Delete</button>
             </div>
           </div>
         ))}
       </div>
-      {showEditForm && (
-        <div className="user-form">
-          <h2>Edit User</h2>
-          <form onSubmit={updateUser}>
-            <input type="text" name="username" placeholder="Username" value={formData.username} onChange={handleInputChange} required />
-            <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleInputChange} required />
-            <input type="tel" name="phonenumber" placeholder="Phone Number" value={formData.phonenumber} onChange={handleInputChange} required />
-            <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleInputChange} required />
-            <button type="submit" className="button add-button">Update User</button>
-          </form>
-        </div>
-      )}
+      <div className="pagination">
+        <button onClick={handlePrevPage} disabled={currentPage === 1}>Previous</button>
+        <span>{currentPage} / {totalPages}</span>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</button>
+      </div>
     </div>
   );
 };
 
 export default UserManagement;
+
 
 
 

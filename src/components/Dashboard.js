@@ -1,35 +1,43 @@
-// import React from 'react';
-// import { useParams } from 'react-router-dom';
-// import './Dashboard.css'; // Import the CSS file
-
-// const Dashboard = () => {
-//   const { username } = useParams();
-//   console.log(username); // Add this line to log the received username
-
-//   return (
-//     <div className="dashboard-container"> {/* Apply a class to the container */}
-//       <h2>Welcome Back, {username}! 👋</h2>
-//       {/* Add your dashboard content here */}
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
-// Dashboard.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './Dashboard.css';
+import axios from 'axios';
 
 const Dashboard = () => {
-  const { username } = useParams();
+  const { id } = useParams(); 
+  
 
+  // State to store user data
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Fetch user data from the API
+        const response = await axios.get(`http://localhost:5000/auth/users/${id}`);
+        
+        // Check if the response contains user data
+        if (response.data) {
+          // Update user data state with the response data
+          setUserData(response.data);
+        } else {
+          console.error('No user data found in the API response');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+  
+    fetchUserData();
+  }, [id]);
+  
   return (
     <div className="dashboard-container">
-      <h2>Welcome Back, {username}! 👋</h2>
+      <h2>Welcome Back, {userData ? userData.username : ''}! 👋</h2>
       <p>This is your personalized dashboard.</p>
-      {/* Add more content here */}
     </div>
   );
 };
 
 export default Dashboard;
+ 

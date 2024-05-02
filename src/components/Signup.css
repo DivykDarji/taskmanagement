@@ -1,5 +1,3 @@
-/* Signup.css */
-
 .signup-container {
   max-width: 400px;
   margin: 50px auto; /* Centering the signup container vertically */
@@ -73,4 +71,44 @@
 
 .message.error-message {
   background-color: #f44336; /* Red background for error message */
+}
+
+.signup-container .error-message {
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 4px;
+  width: fit-content;
+  position: absolute;
+  top: 0;
+  right: -50%;
+  transform: translateX(50%);
+  text-align: center;
+  font-size: 16px;
+  color: #fff; /* Text color */
+}
+
+.signup-container .error-message.success-message {
+  background-color: #4caf50; /* Green background for success message */
+}
+
+.signup-container .error-message.error-message {
+  background-color: #f44336; /* Red background for error message */
+}
+
+.login-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 2px solid transparent; /* Add a transparent underline */
+  transition: border-color 0.3s ease; /* Smooth transition for the underline color */
+}
+
+.login-link a:hover {
+  border-color: #007bff; /* Change the underline color on hover */
 }

@@ -109,7 +109,7 @@
 import React, { useState, useEffect } from 'react';
 import './Login.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,Link } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -161,7 +161,7 @@ const Login = () => {
 
         // Delay the navigation after showing the message
         setTimeout(() => {
-          navigate(`/dashboard/${response.data.user.username}`);
+          navigate(`/dashboard/${response.data.user._id}`);
         }, 2000);
       } else {
         setLoginResult({ message: 'Unexpected error. Please try again.', type: 'error' });
@@ -249,6 +249,8 @@ const Login = () => {
           </button1>
         </div>
       )}
+            <p className="signup-link">Don't have an account? <Link to="/signup">Sign up</Link></p>
+
     </div>
   );
 };

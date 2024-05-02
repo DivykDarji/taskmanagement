@@ -18,9 +18,21 @@ divy-portfolio-website/
                    |--Login.js
                    |--Signup.css
                    |--Signup.js
-                   |--WaveBackground.css
-                   |--WaveBackground.js
-
+                   |--Dashboard.css
+                   |--Dashboard.js
+                   |--Thankyou.css
+                   |--Thankyou.js
+                   |--UserEdit.css
+                   |--UserEdit.js
+                   |--UserManagement.css
+                   |--UserManagement.js
+                   |--UserProfile.js
+       |-- controllers/
+                   |--loginControllers.js
+                   |--signupControllers.js
+                   |--userController.js  
+       |-- controllers/
+                   |--errorHandler.js    
        |-- App.js
        |-- App.css
 |-- routes
