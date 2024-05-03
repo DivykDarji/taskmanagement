@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
+const updateExistingUsers = require("./updateUsers");
+
 require("dotenv").config();
 const cors = require("cors");
 
@@ -27,7 +29,7 @@ db.once("open", () => {
   // Mount the authRoutes after connecting to MongoDB
   app.use("/auth", authRoutes);
 });
-
+updateExistingUsers();
 // Global error handler middleware
 app.use((err, req, res, next) => {
   console.error("Global error handler:", err);

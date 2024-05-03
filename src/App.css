@@ -52,3 +52,15 @@
 .wrapper li a:hover {
   color: #666; /* Set link hover color */
 }
+
+/* Light mode styles */
+.wrapper {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Dark mode styles */
+.wrapper.dark-mode {
+  background-color: #333333;
+  color: #ffffff;
+}
