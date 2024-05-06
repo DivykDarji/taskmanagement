@@ -2,6 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const updateExistingUsers = require("./updateUsers");
+const admin = require('firebase-admin');
+const serviceAccount = require('./config/serviceAccountKey.json');
+
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 require("dotenv").config();
 const cors = require("cors");
@@ -23,22 +30,28 @@ db.on("error", (err) => {
   console.error("MongoDB connection error:", err);
 });
 
-db.once("open", () => {
+// Define an async function to wrap the updateExistingUsers call
+async function startServer() {
+  // Wait for MongoDB connection to open
+  await new Promise((resolve) => db.once("open", resolve));
   console.log("Connected to MongoDB");
 
-  // Mount the authRoutes after connecting to MongoDB
+  // Mount the authRoutes before defining the global error handler
   app.use("/auth", authRoutes);
-});
-updateExistingUsers();
-// Global error handler middleware
-app.use((err, req, res, next) => {
-  console.error("Global error handler:", err);
-  res.status(500).json({ error: "Internal Server Error" });
-});
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+  // Call updateExistingUsers asynchronously
 
+  // Global error handler middleware
+  app.use((err, req, res, next) => {
+    console.error("Global error handler:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  });
 
+  // Start listening on the specified port
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
 
+// Call the async function to start the server
+startServer();

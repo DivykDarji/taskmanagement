@@ -1,7 +1,12 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import './Signup.css';
+const { getAuth } = require('firebase/auth'); // Use require syntax for CommonJS modules
+const firebaseApp = require('../firebaseConfig'); // Use require syntax for CommonJS modules
+const { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } = require('firebase/auth'); // Use require syntax for CommonJS modules
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -14,49 +19,34 @@ const Signup = () => {
   const [signupResult, setSignupResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isSignupWithGoogle ] = useState(false);
+
+  const auth = getAuth(firebaseApp);
 
   const handleSignup = async (e) => {
-  e.preventDefault();
-
-  // Validate form fields
-  const validationErrors = validateForm(formData);
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-
-  // Validate email format
-  if (!isValidEmail(formData.email)) {
-    setErrors((prevErrors) => ({ ...prevErrors, email: 'Invalid email format' }));
-    return;
-  }
-
-  try {
-    setLoading(true);
-    console.log('Sending signup request with data:', formData);
-    const response = await axios.post('http://localhost:5000/auth/signup', formData);
-
-    console.log('Response from server:', response.data);
-
-    if (response.status === 201) {
-      console.log('Signup successful');
-      setSignupResult({ message: 'Signup successful', type: 'success' });
-      localStorage.setItem('username', formData.username);
-      setTimeout(() => {
-        navigate(`/thankyou-signup/${response.data.user._id}`);
-      }, 2000);
+    e.preventDefault();
+    const validationErrors = validateForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
-  } catch (error) {
-    console.error('Error signing up:', error);
-    if (error.response && error.response.status === 409) {
-      setErrors({ ...errors, email: 'Email already exists. Please log in.' });
-    } else {
-      setSignupResult({ message: 'Unexpected error. Please try again.', type: 'error' });
+    
+    try {
+      setLoading(true);
+      if (isSignupWithGoogle) {
+        // Sign up with Google using Firebase Authentication
+         await handleSignupWithGoogle();
+      } else {
+        // Traditional signup
+         await handleTraditionalSignup();
+      }
+      // Handle response accordingly
+    } catch (error) {
+      // Handle error
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +63,6 @@ const Signup = () => {
         setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
         checkEmailExists(value);
       }
-     
     } else if (name === 'phonenumber') {
       if (!isValidPhoneNumber(value)) {
         setErrors((prevErrors) => ({ ...prevErrors, phonenumber: 'Invalid phone number format' }));
@@ -82,6 +71,51 @@ const Signup = () => {
       }
     }
   };
+
+  const handleSignupWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const provider = new GoogleAuthProvider();
+      const response = await signInWithPopup(auth, provider);
+
+      // Redirect to thank you page upon successful authentication
+      if (response.user) {
+        navigate(`/thankyou-signup/${response.user.uid}`);
+      }
+    } catch (error) {
+      console.error('Error signing in with Google:', error);
+      setSignupResult({ message: 'Error signing in with Google. Please try again.', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTraditionalSignup = async () => {
+  try {
+    setLoading(true);
+    const { email, password, username, phonenumber } = formData;
+    const response = await createUserWithEmailAndPassword(auth, email, password);
+    await axios.post('http://localhost:5000/auth/signup', {
+      email,
+      username,
+      phonenumber,
+      password, // Include password in the request
+      authMethod: 'traditional', // Add authMethod field to specify traditional authentication
+    });
+    // Check the response from createUserWithEmailAndPassword
+    if (response.user) {
+      // Handle successful signup
+      setSignupResult({ message: 'Signup successful', type: 'success' });
+      setTimeout(() => {
+        navigate(`/thankyou-signup/${response.user.uid}?name=${encodeURIComponent(username)}`);
+      }, 2000);
+    }
+  } catch (error) {
+    // Handle error
+  } finally {
+    setLoading(false);
+  }
+};
 
   const checkEmailExists = async (email) => {
     try {
@@ -126,7 +160,7 @@ const Signup = () => {
 
   const isValidEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email.trim()); // Trim whitespace before validating
+    return emailRegex.test(email.trim());
   };
 
   const isValidPhoneNumber = (phoneNumber) => {
@@ -173,14 +207,19 @@ const Signup = () => {
         </button>
       </form>
 
+      <div className="sign-in-with-google" onClick={handleSignupWithGoogle}>
+        <span>Continue with: </span>
+        <FontAwesomeIcon icon={faGoogle} className="google-icon" />
+      </div>
+
+      {/* Signup result message */}
       {signupResult && (
         <div className={`message ${signupResult.type === 'success' ? 'success-message' : 'error-message'}`}>
           <p>{signupResult.message}</p>
-          <button className="close-button" onClick={() => setSignupResult(null)}>
-            &#x2716;
-          </button>
         </div>
       )}
+
+      {/* Your existing login link */}
       <p className="login-link">
         Already have an account? <Link to="/login">Log in</Link>
       </p>

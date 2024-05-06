@@ -50,6 +50,18 @@
   background-color: #454442; /* Change to your desired hover background color */
   color: #fff; /* Change to your desired hover text color */
 }
+.sign-in-with-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.google-icon {
+  font-size: 24px;
+  margin-left: 5px;
+  cursor: pointer;
+}
 
 .message {
   padding: 8px;

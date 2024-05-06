@@ -5,6 +5,7 @@ async function updateExistingUsers() {
     const users = await User.find({});
     for (const user of users) {
       user.isdelete = false; // Set isdelete to false for existing users
+      user.authMethod = "traditional"; // Set default authentication method
       await user.save();
     }
     console.log("Existing users updated successfully");

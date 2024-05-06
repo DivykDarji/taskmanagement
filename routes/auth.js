@@ -1,17 +1,19 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
-
+const mongoose = require("mongoose"); // Import mongoose
 const router = express.Router();
+const firebaseApp = require('../src/firebaseConfig');
+const { getAuth } = require('firebase/auth'); // Keep using CommonJS require syntax
+const auth = getAuth(firebaseApp);
 
-// Signup
 router.post("/signup", async (req, res) => {
   try {
-    const { username, email, phonenumber, password } = req.body;
+    const { email, username, phonenumber, password, authMethod } = req.body;
 
     // Validate input
-    if (!username || !email || !phonenumber || !password) {
-      return res.status(400).json({ error: "All fields are required" });
+    if (!email || !username || !phonenumber || !password || !authMethod) {
+      return res.status(400).json({ error: "Email, username, phonenumber, password, and authMethod are required" });
     }
 
     // Check if the email is already in use
@@ -20,42 +22,38 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ error: "Email is already in use" });
     }
 
-    // Validate password complexity
-    if (password.length < 8) {
-      return res.status(400).json({ error: "Password must be at least 8 characters long" });
+    // Save user data based on authMethod
+    let newUser;
+    if (authMethod === 'traditional') {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      newUser = new User({
+        email,
+        username,
+        phonenumber,
+        password: hashedPassword,
+        isdelete: false,
+        authMethod: 'traditional',
+      });
+    } else if (authMethod === 'firebase') {
+      newUser = new User({
+        email,
+        isdelete: false,
+        authMethod: 'firebase',
+      });
+    } else {
+      return res.status(400).json({ error: "Invalid authMethod" });
     }
 
-    // Hash the entered password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create a new user with the hashed password
-    const newUser = new User({
-      username,
-      email,
-      phonenumber,
-      password: hashedPassword,
-    });
-
-    // Save the user to the database
     await newUser.save();
 
-    // Send a reduced user object in the response
-    const userResponse = {
-      _id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      phonenumber: newUser.phonenumber,
-    };
-
-    res.status(201).json({
-      message: "User created successfully",
-      user: userResponse,
-    });
+    res.status(201).json({ message: "Signup successful", user: newUser });
   } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ error: "Error creating user" });
+    console.error("Error signing up:", error);
+    res.status(500).json({ error: "Error signing up" });
   }
 });
+
+
 
 // Login (POST)
 router.post("/login", async (req, res) => {
@@ -160,6 +158,12 @@ router.get("/users", async (req, res) => {
 router.get("/users/:id", async (req, res) => {
   try {
     const userId = req.params.id;
+    
+    // Validate if userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
