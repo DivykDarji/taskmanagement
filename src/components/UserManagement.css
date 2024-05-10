@@ -91,3 +91,69 @@
 .pagination span {
   margin: 0 10px;
 }
+
+/* Search Section */
+.search-section {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+/* Search Container */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 0; /* Initially hidden */
+  padding: 0;
+  border: none; /* Remove border */
+  font-size: 16px;
+  outline: none;
+  transition: width 0.3s ease, padding 0.3s ease; /* Transition for width and padding */
+  overflow: hidden; /* Hide any content overflowing from the input */
+  opacity: 0; /* Initially hidden */
+}
+
+.show-search .search-input {
+  width: calc(100% - 30px); /* Adjusted width to accommodate search icon */
+  padding: 12px; /* Add padding when shown */
+  border: 1px solid #ccc; /* Add border when shown */
+  border-radius: 4px; /* Add border radius when shown */
+  opacity: 1; /* Show the input */
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 30px; /* Increase size of the search icon */
+  height: 30px; /* Increase size of the search icon */
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.search-icon:hover {
+  opacity: 1;
+}
+
+/* Extraordinary Styling */
+.search-input {
+  background-color: #f9f9f9; /* Light background color */
+  color: #333; /* Dark text color */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Search Icon Hover */
+.search-icon:hover {
+  transform: translateY(-50%) scale(1.1); /* Add slight scale effect on hover */
+  opacity: 0.9; /* Reduce opacity on hover */
+}
+
+
+/* Search Icon Image */
+.search-icon img {
+  width: 100%; /* Ensure image fills the icon container */
+  height: 100%; /* Ensure image fills the icon container */
+}

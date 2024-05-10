@@ -137,11 +137,22 @@ router.get("/users", async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const users = await User.find({ isdelete: false }, "-password")
+    let query = { isdelete: false };
+
+    // Check if search query is provided
+    if (req.query.search) {
+      // Use $or operator to search by username or email
+      query.$or = [
+        { username: { $regex: req.query.search, $options: 'i' } }, // Case-insensitive search for username
+        { email: { $regex: req.query.search, $options: 'i' } } // Case-insensitive search for email
+      ];
+    }
+
+    const users = await User.find(query, "-password")
                              .skip(skip)
                              .limit(limit);
 
-    const totalCount = await User.countDocuments({ isdelete: false });
+    const totalCount = await User.countDocuments(query);
     const totalPages = Math.ceil(totalCount / limit);
 
     res.json({ users, totalPages });
