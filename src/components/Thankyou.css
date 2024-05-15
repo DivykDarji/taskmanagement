@@ -1,5 +1,3 @@
-/* Thankyou.css */
-
 .thankyou-container {
   margin: 20px; /* Add some margin to the container for visibility */
   padding: 20px;
@@ -7,4 +5,28 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
   color: #333; /* Dark text color */
+}
+
+.social-share-container {
+  text-align: center; /* Center the buttons horizontally */
+  margin-top: 20px; /* Add margin to separate from the thankyou-container */
+}
+
+.share-via {
+  margin-bottom: 10px;
+}
+
+.social-share-buttons > * {
+  margin: 0 10px;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.social-share-buttons > *:hover {
+  background-color: #0056b3;
 }

@@ -208,7 +208,7 @@ const Signup = () => {
       </form>
 
       <div className="sign-in-with-google" onClick={handleSignupWithGoogle}>
-        <span>Continue with: </span>
+        <span>Continue with:  </span>
         <FontAwesomeIcon icon={faGoogle} className="google-icon" />
       </div>
 

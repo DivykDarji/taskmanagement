@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './Thankyou.css';
 import axios from 'axios';
+import { TwitterShareButton, FacebookShareButton, LinkedinShareButton } from 'react-share';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faFacebook, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
 const ThankYou = () => {
   const { id } = useParams(); // Extract the id parameter from the URL
@@ -42,12 +45,30 @@ const ThankYou = () => {
   }, [id]);
 
   return (
-    <div className="thankyou-container">
-      {loading ? (
-        <h2>Loading...</h2>
-      ) : (
-        <h2>Thank You for Signing Up, {userData ? userData.username : ''}! 👋</h2>
-      )}
+    <div>
+      <div className="thankyou-container">
+        {loading ? (
+          <h2>Loading...</h2>
+        ) : (
+          <>
+            <h2>Thank You for Signing Up, {userData ? userData.username : ''}! 👋</h2>
+          </>
+        )}
+      </div>
+      <div className="social-share-container">
+        <p className="share-via">Share via</p>
+        <div className="social-share-buttons">
+          <TwitterShareButton url={window.location.href}>
+            <FontAwesomeIcon icon={faTwitter} />
+          </TwitterShareButton>
+          <FacebookShareButton url={window.location.href}>
+            <FontAwesomeIcon icon={faFacebook} />
+          </FacebookShareButton>
+          <LinkedinShareButton url={window.location.href}>
+            <FontAwesomeIcon icon={faLinkedin} />
+          </LinkedinShareButton>
+        </div>
+      </div>
     </div>
   );
 };

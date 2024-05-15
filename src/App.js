@@ -13,6 +13,7 @@ import Dashboard from "./components/Dashboard";
 import ThankYouSignup from "./components/Thankyou";
 import UserManagement from "./components/Usermanagement";
 import UserEdit from './components/UserEdit';
+import AddTaskPage from "./components/AddTaskPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/home" element={<Banner />} />
           <Route path="/user-management" element={<UserManagement />} />
           <Route path="/edit-user/:id" element={<UserEdit />} />
+          <Route path={`/add-task/:id`} element={<AddTaskPage />} />
           <Route path="/" element={<Banner />} />
         </Routes>
         <Box />

@@ -97,6 +97,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Error during login" });
   }
 });
+
 router.post("/check-email", async (req, res) => {
   try {
     const { email } = req.body;
@@ -266,6 +267,7 @@ router.delete("/users/:id", async (req, res) => {
     res.status(500).json({ error: "Error marking user as deleted" });
   }
 });
+
 
 module.exports = router;
 

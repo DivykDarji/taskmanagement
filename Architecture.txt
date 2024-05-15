@@ -23,6 +23,7 @@ divy-portfolio-website/
                    |--Signup.js
                    |--Dashboard.css
                    |--Dashboard.js
+                   |--Sidebar.js
                    |--Thankyou.css
                    |--Thankyou.js
                    |--UserEdit.css
@@ -41,5 +42,6 @@ divy-portfolio-website/
        |-- App.css
 |-- routes
      |--auth.js
+     |--task.js
 |-- package.json
 |-- server.js

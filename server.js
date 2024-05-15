@@ -4,6 +4,8 @@ const authRoutes = require("./routes/auth");
 const updateExistingUsers = require("./updateUsers");
 const admin = require('firebase-admin');
 const serviceAccount = require('./config/serviceAccountKey.json');
+const tasksRouter = require('./routes/taskRoute'); // Corrected file name
+
 
 
 admin.initializeApp({
@@ -37,8 +39,9 @@ async function startServer() {
   console.log("Connected to MongoDB");
 
   // Mount the authRoutes before defining the global error handler
+  
   app.use("/auth", authRoutes);
-
+  app.use('/tasks', tasksRouter);
   // Call updateExistingUsers asynchronously
 
   // Global error handler middleware
