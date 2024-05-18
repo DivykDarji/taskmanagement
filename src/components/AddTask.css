@@ -1,0 +1,53 @@
+.add-task-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .add-task-page h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .add-task-page form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+  }
+  
+  .add-task-page label {
+    font-weight: bold;
+  }
+  
+  .add-task-page input,
+  .add-task-page textarea,
+  .add-task-page select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-task-page textarea {
+    height: 100px;
+  }
+  
+  .add-task-page button {
+    grid-column: 1 / -1;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  }
+  
+  .add-task-page button:hover {
+    background-color: #0056b3;
+  }
+  
+  .add-task-page .error {
+    color: red;
+    font-weight: bold;
+  }
+  
