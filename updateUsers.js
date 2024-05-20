@@ -1,17 +1,24 @@
-const User = require("./models/User");
+const Task = require("./models/task");
 
-async function updateExistingUsers() {
-  try {
-    const users = await User.find({});
-    for (const user of users) {
-      user.isdelete = false; // Set isdelete to false for existing users
-      user.authMethod = "traditional"; // Set default authentication method
-      await user.save();
+async function updateExistingTasks() {
+    try {
+        // Find all existing tasks
+        const tasks = await Task.find({});
+
+        // Iterate over each task and update properties
+        for (const task of tasks) {
+            // Update task properties here
+            // For example, if you want to add a new field 'isDeleted' and set it to false for existing tasks:
+            task.isDeleted = false;
+
+            // Save the updated task
+            await task.save();
+        }
+
+        console.log("Existing tasks updated successfully");
+    } catch (error) {
+        console.error("Error updating existing tasks:", error);
     }
-    console.log("Existing users updated successfully");
-  } catch (error) {
-    console.error("Error updating existing users:", error);
-  }
 }
 
-module.exports = updateExistingUsers;
+module.exports = updateExistingTasks;

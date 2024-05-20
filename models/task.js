@@ -7,6 +7,7 @@ const taskSchema = new mongoose.Schema({
     priority: { type: String, enum: ['Low', 'Medium', 'High'], required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     categories: [{ type: String }], // Added field for task categories or labels
+    completed: { type: Boolean, default: false }, // New field to track task completion
     assignees: [{
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         role: { type: String } // Additional field for assignee role/status
@@ -15,7 +16,8 @@ const taskSchema = new mongoose.Schema({
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         content: { type: String },
         createdAt: { type: Date, default: Date.now }
-    }]
+    }],
+    isDeleted: { type: Boolean, default: false } // New field for soft deletion
 });
 
 // 1. Schema Refinement

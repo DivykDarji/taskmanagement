@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
-const updateExistingUsers = require("./updateUsers");
+// const updateExistingTasks = require("./updateUsers");
 const admin = require('firebase-admin');
 const serviceAccount = require('./config/serviceAccountKey.json');
 const tasksRouter = require('./routes/taskRoute'); // Corrected file name
@@ -43,7 +43,7 @@ async function startServer() {
   app.use("/auth", authRoutes);
   app.use('/tasks', tasksRouter);
   // Call updateExistingUsers asynchronously
-
+  // await updateExistingTasks();
   // Global error handler middleware
   app.use((err, req, res, next) => {
     console.error("Global error handler:", err);
