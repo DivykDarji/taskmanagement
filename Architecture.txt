@@ -4,6 +4,7 @@ divy-portfolio-website/
       |--client_secret_1003759930318-1kuvohpeepiffkgsfuprn0rq2g1c1qrr.apps.googleusercontent.com.json
 |-- models
       |-- User.js
+      |--tasks.js
 |--node modules/
 |-- public/
 |   |-- index.html
@@ -43,5 +44,10 @@ divy-portfolio-website/
 |-- routes
      |--auth.js
      |--task.js
+     |--authMiddleware.js
+     |--jwtUtils.js
 |-- package.json
 |-- server.js
+|--UpdateUsers.js
+|--firebase.js
+|--generateSecretKey.js

@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema({
   phonenumber: String,
   password: { type: String }, // Making password optional
   isdelete: { type: Boolean, default: false },
-  authMethod: { type: String } // Add authMethod field to differentiate authentication method
+  authMethod: { type: String }, // Add authMethod field to differentiate authentication method
+  isAdmin: { type: Boolean, default: false } , // Add isAdmin field to indicate admin status
+  tasks: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' }
 });
 
 const User = mongoose.model("User", userSchema);

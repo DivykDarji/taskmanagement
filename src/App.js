@@ -27,7 +27,7 @@ function App() {
           <Route path="/learnmore" element={<React.Fragment><Header /><Learnmore /></React.Fragment>} />
           <Route path="/thankyou-signup/:id" element={<ThankYouSignup />} />
           <Route path="/home" element={<Banner />} />
-          <Route path="/user-management" element={<UserManagement />} />
+          <Route path="/admin/dashboard/:userId" element={<UserManagement />} /> {/* Updated route for UserManagement */}
           <Route path="/edit-user/:id" element={<UserEdit />} />
           <Route path={`/add-task/:id`} element={<AddTaskPage />} />
           <Route path="/" element={<Banner />} />

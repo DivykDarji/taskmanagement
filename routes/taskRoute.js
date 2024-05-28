@@ -18,6 +18,46 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
+// Get all tasks with pagination
+router.get('/', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1; // Parse the page number from query params, default to page 1 if not provided
+        const limit = parseInt(req.query.limit) || 10; // Parse the limit (tasks per page) from query params, default to 10 if not provided
+
+        const startIndex = (page - 1) * limit; // Calculate the start index of tasks for the current page
+        const endIndex = page * limit; // Calculate the end index of tasks for the current page
+
+        const tasks = await Task.find()
+            .populate('assignees.user', 'username')
+            .populate('comments.user', 'username')
+            .sort({ createdAt: -1 }) // Sort tasks by createdAt field in descending order
+            .limit(limit) // Limit the number of tasks per page
+            .skip(startIndex); // Skip tasks before the start index for pagination
+
+        const totalTasks = await Task.countDocuments(); // Get the total number of tasks
+
+        const pagination = {
+            currentPage: page,
+            totalPages: Math.ceil(totalTasks / limit) // Calculate the total number of pages
+        };
+
+        // Check if there are more tasks for the next page
+        if (endIndex < totalTasks) {
+            pagination.nextPage = page + 1;
+        }
+
+        // Check if there are tasks before the current page
+        if (startIndex > 0) {
+            pagination.prevPage = page - 1;
+        }
+
+        res.json({ tasks, pagination });
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 // Create a new task
 router.post('/', async (req, res) => {
@@ -73,12 +113,12 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Update task completion status
-router.put('/:taskId/complete', async (req, res) => {
+// Update task completion status for a specific user
+router.put('/user/:userId/:taskId/complete', async (req, res) => {
     try {
-        const task = await Task.findById(req.params.taskId);
+        const task = await Task.findOne({ _id: req.params.taskId, createdBy: req.params.userId });
         if (!task) {
-            return res.status(404).json({ message: 'Task not found' });
+            return res.status(404).json({ message: 'Task not found for the specified user' });
         }
         task.completed = !task.completed;
         if (task.completed) {

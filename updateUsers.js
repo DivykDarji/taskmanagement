@@ -1,24 +1,26 @@
-const Task = require("./models/task");
 
-async function updateExistingTasks() {
+const User = require("./models/User");
+const Task = require("./models/task"); // Assuming you have a Task model defined
+
+
+async function updateExistingUsersWithIsAdmin() {
     try {
-        // Find all existing tasks
-        const tasks = await Task.find({});
+        // Find all existing users
+        const users = await User.find({});
 
-        // Iterate over each task and update properties
-        for (const task of tasks) {
-            // Update task properties here
-            // For example, if you want to add a new field 'isDeleted' and set it to false for existing tasks:
-            task.isDeleted = false;
-
-            // Save the updated task
-            await task.save();
+        // Iterate over each user and update properties
+        for (const user of users) {
+            // Add isAdmin field if it doesn't already exist
+            if (!user.hasOwnProperty('isAdmin')) {
+                user.isAdmin = false; // Set default value to false
+                await user.save(); // Save the updated user
+            }
         }
 
-        console.log("Existing tasks updated successfully");
+        console.log("Existing users updated with isAdmin field successfully");
     } catch (error) {
-        console.error("Error updating existing tasks:", error);
+        console.error("Error updating existing users with isAdmin field:", error);
     }
 }
 
-module.exports = updateExistingTasks;
+module.exports = updateExistingUsersWithIsAdmin;

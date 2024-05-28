@@ -1,190 +1,67 @@
 /* Calendar container */
-.calendar {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f4;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+}
+
+/* FullCalendar */
+.google-calendar {
+  flex: 1;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Event indicator bar */
+.event-indicator-bar {
+  background-color: #4285f4;
+  width: 4px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Event content */
+.event-content {
+  padding: 8px;
+}
+
+/* Event title */
+.event-title {
+  font-weight: bold;
+  color: #202124;
+}
+
+/* Event details */
+.event-details {
+  margin-top: 4px;
+  color: #5f6368;
+}
+
+/* Task details */
+.task-details {
+  margin-top: 20px;
+  color: #202124;
+}
+
+/* Calendar tile */
+.react-calendar__tile {
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+/* Responsive layout */
+@media screen and (max-width: 768px) {
+  /* Adjust styles for smaller screens */
+  .calendar-container {
+    height: auto;
+    overflow-y: auto;
   }
-  
-  /* Calendar title */
-  .calendar-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333333;
-  }
-  
-  /* Calendar date */
-  .calendar-date {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #666666;
-  }
-  
-  /* React calendar container */
-  .react-calendar {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Navigation buttons */
-  .react-calendar__navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    border-bottom: 1px solid #dddddd;
-  }
-  
-  /* Navigation label */
-  .react-calendar__navigation__label {
-    font-size: 16px;
-    color: #555555;
-  }
-  
-  /* Navigation arrows */
-  .react-calendar__navigation__arrow {
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    border-radius: 50%;
-    padding: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .react-calendar__navigation__arrow:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Calendar tile */
-  .react-calendar__tile {
-    padding: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  /* Active tile */
-  .react-calendar__tile--active {
-    background-color: #007bff;
-    color: #ffffff;
-  }
-  
-  /* Hover effect */
-  .react-calendar__tile--hover {
-    background-color: #f0f0f0;
-  }
-  
-  /* Task indicator */
-  .task-indicator {
-    position: relative;
-  }
-  
-  .task-indicator ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .task-indicator li {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #555555;
-  }
-  
-  /* Task indicator icon */
-  .task-indicator::after {
-    content: "";
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    background-color: #007bff;
-    border-radius: 50%;
-  }
-  
-  /* Today's date */
-  .react-calendar__tile--now {
-    background-color: #007bff;
-    color: #ffffff;
-  }
-  
-  /* Custom hover animation */
-  .react-calendar__tile:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Gradient overlay */
-  .react-calendar__tile::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.5));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 12px;
-  }
-  
-  .react-calendar__tile:hover::after {
-    opacity: 1;
-  }
-  
-  /* Highlighted events */
-  .react-calendar__tile--event {
-    background-color: #ffcc00;
-    color: #333333;
-  }
-  
-  /* Event indicator */
-  .event-indicator {
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    background-color: #ffcc00;
-    border-radius: 50%;
-    z-index: 2;
-  }
-  
-  /* Event indicator animation */
-  .event-indicator::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid #ffcc00;
-    animation: event-pulse 1s ease infinite;
-  }
-  
-  @keyframes event-pulse {
-    0% {
-      transform: scale(0.8);
-    }
-    50% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0.8);
-    }
-  }
-  
+}

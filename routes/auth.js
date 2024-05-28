@@ -2,6 +2,9 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const mongoose = require("mongoose"); // Import mongoose
+const jwtUtils = require('./jwtUtils'); // Import JWT utility functions
+const authMiddleware = require('./authMiddleware'); // Import authenticateToken middleware
+
 const router = express.Router();
 const firebaseApp = require('../src/firebaseConfig');
 const { getAuth } = require('firebase/auth'); // Keep using CommonJS require syntax
@@ -9,7 +12,7 @@ const auth = getAuth(firebaseApp);
 
 router.post("/signup", async (req, res) => {
   try {
-    const { email, username, phonenumber, password, authMethod } = req.body;
+    const { email, username, phonenumber, password, authMethod, isAdmin } = req.body;
 
     // Validate input
     if (!email || !username || !phonenumber || !password || !authMethod) {
@@ -33,12 +36,14 @@ router.post("/signup", async (req, res) => {
         password: hashedPassword,
         isdelete: false,
         authMethod: 'traditional',
+        isAdmin: false // Default to false if isAdmin is not provided
       });
     } else if (authMethod === 'firebase') {
       newUser = new User({
         email,
         isdelete: false,
         authMethod: 'firebase',
+        isAdmin: false // Default to false if isAdmin is not provided
       });
     } else {
       return res.status(400).json({ error: "Invalid authMethod" });
@@ -52,7 +57,6 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ error: "Error signing up" });
   }
 });
-
 
 
 // Login (POST)
@@ -73,17 +77,21 @@ router.post("/login", async (req, res) => {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (passwordMatch) {
+        // Generate JWT token
+        const token = jwtUtils.generateToken({ email: user.email });
         // Send a reduced user object in the response
         const userResponse = {
           _id: user._id,
           username: user.username,
           email: user.email,
           phonenumber: user.phonenumber,
+          isAdmin: user.isAdmin  // Include isAdmin status
         };
 
         res.status(200).json({
           message: "Login successful",
           user: userResponse,
+          token: token, // Send token in response
         });
       } else {
         res.status(401).json({ error: "Invalid password" });
@@ -97,6 +105,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Error during login" });
   }
 });
+
 
 router.post("/check-email", async (req, res) => {
   try {
@@ -209,6 +218,7 @@ router.post("/users", async (req, res) => {
       email,
       phonenumber,
       password: hashedPassword,
+      isAdmin: false // Default isAdmin to false for new users
     });
     await newUser.save();
     res.status(201).json({
@@ -218,6 +228,7 @@ router.post("/users", async (req, res) => {
         username: newUser.username,
         email: newUser.email,
         phonenumber: newUser.phonenumber,
+        isAdmin: newUser.isAdmin // Include isAdmin in the response
       },
     });
   } catch (error) {
@@ -228,7 +239,7 @@ router.post("/users", async (req, res) => {
 
 router.put("/users/:id", async (req, res) => {
   try {
-    const { username, email, phonenumber, password } = req.body;
+    const { username, email, phonenumber, password , isAdmin} = req.body;
     const userId = req.params.id;
     const user = await User.findById(userId);
     if (!user) {
@@ -238,6 +249,7 @@ router.put("/users/:id", async (req, res) => {
     user.username = username || user.username;
     user.email = email || user.email;
     user.phonenumber = phonenumber || user.phonenumber;
+    user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin; // Update isAdmin if provided, otherwise keep the existing value
     // Update password only if it's provided
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -266,6 +278,28 @@ router.delete("/users/:id", async (req, res) => {
     console.error("Error marking user as deleted:", error);
     res.status(500).json({ error: "Error marking user as deleted" });
   }
+});
+
+// const isAdmin = (req, res, next) => {
+//   if (req.user && req.user.isAdmin) {
+//     // User is an admin, proceed to the next middleware/route handler
+//     next();
+//   } else {
+//     // User is not an admin, return a 403 Forbidden response
+//     res.status(403).json({ error: "Unauthorized access" });
+//   }
+// };
+
+// // Example route that requires admin privileges
+// router.post("/admin-route", authMiddleware.authenticateToken, isAdmin, (req, res) => {
+//   // If the execution reaches here, it means the user is an admin
+//   res.json({ message: "Admin route accessed successfully" });
+// });
+// Example protected route
+router.get("/protected-route", authMiddleware.authenticateToken, (req, res) => {
+  // If the execution reaches here, it means the token is valid
+  // You can access the user object from req.user
+  res.json({ message: "You have access to this protected route", user: req.user });
 });
 
 
