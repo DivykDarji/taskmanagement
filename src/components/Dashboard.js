@@ -3,8 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Dashboard.css";
 import Sidebar from "./Sidebar";
-import FullCalendar from "@fullcalendar/react"; // Import the FullCalendar component
-import dayGridPlugin from "@fullcalendar/daygrid"; // Import the dayGrid plugin;s";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
 import { FaBars, FaAngleDown } from "react-icons/fa";
 import AddTaskPage from "./AddTaskPage";
 import "./dashboard-calendar.css";
@@ -25,7 +28,8 @@ const Dashboard = () => {
   const [sortOption, setSortOption] = useState("dueDate");
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksForToday, setTasksForToday] = useState([]); // Added tasksForToday state variable
-  const [selectedDate, setSelectedDate] = useState(new Date());
+ // eslint-disable-next-line
+const [selectedDate, setSelectedDate] = useState(new Date());
   const tasksPerPage = 5;
 
   // Define fetchTasks function outside useEffect
@@ -125,7 +129,7 @@ const Dashboard = () => {
   const sortedTasks = [...tasks].sort((a, b) => {
     if (!a.dueDateTime) return -1; // Handle cases where dueDateTime is null or undefined
     if (!b.dueDateTime) return 1; // Handle cases where dueDateTime is null or undefined
-  
+
     if (sortOption === "dueDate") {
       return new Date(a.dueDateTime) - new Date(b.dueDateTime); // Changed dueDate to dueDateTime
     } else if (sortOption === "priority") {
@@ -151,39 +155,39 @@ const Dashboard = () => {
   };
 
   // Filter tasks based on active tab
-const filteredTasks = sortedTasks.filter((task) => {
-  // Get today's date in ISO format (YYYY-MM-DD)
-  const today = new Date().toISOString().split("T")[0];
+  const filteredTasks = sortedTasks.filter((task) => {
+    // Get today's date in ISO format (YYYY-MM-DD)
+    const today = new Date().toISOString().split("T")[0];
 
-  // Extract task due date and completed date (if available) and format them
-  const taskDueDate = formatDate(task.dueDateTime.split("T")[0]);
-  const completedAtDate = task.completedAt
-    ? formatDate(task.completedAt.split("T")[0])
-    : null;
+    // Extract task due date and completed date (if available) and format them
+    const taskDueDate = formatDate(task.dueDateTime.split("T")[0]);
+    const completedAtDate = task.completedAt
+      ? formatDate(task.completedAt.split("T")[0])
+      : null;
 
-     // Switch statement to handle different tabs
-  switch (activeTab) {
-    case "Recently":
-      // Display completed tasks within the last seven days in the "Recently" tab
-      return task.completed && completedAtDate > sevenDaysFromNow;
+    // Switch statement to handle different tabs
+    switch (activeTab) {
+      case "Recently":
+        // Display completed tasks within the last seven days in the "Recently" tab
+        return task.completed && completedAtDate > sevenDaysFromNow;
 
-    case "Today":
-      // Display tasks due today and not completed in the "Today" tab
-      return (
-        taskDueDate.getTime() === new Date(today).getTime() && !task.completed
-      );
+      case "Today":
+        // Display tasks due today and not completed in the "Today" tab
+        return (
+          taskDueDate.getTime() === new Date(today).getTime() && !task.completed
+        );
 
-    case "Upcoming":
-      // Display tasks due in the future and within the next seven days in the "Upcoming" tab
-      return taskDueDate > new Date(today) && taskDueDate <= sevenDaysFromNow;
-    case "Later":
-      // Display tasks due beyond the current month in the "Later" tab
-      return taskDueDate > lastDayOfCurrentMonth && !task.completed;
-    default:
-      // For any other tab, return true (display all tasks)
-      return true;
-  }
-});
+      case "Upcoming":
+        // Display tasks due in the future and within the next seven days in the "Upcoming" tab
+        return taskDueDate > new Date(today) && taskDueDate <= sevenDaysFromNow;
+      case "Later":
+        // Display tasks due beyond the current month in the "Later" tab
+        return taskDueDate > lastDayOfCurrentMonth && !task.completed;
+      default:
+        // For any other tab, return true (display all tasks)
+        return true;
+    }
+  });
 
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
@@ -216,13 +220,13 @@ const filteredTasks = sortedTasks.filter((task) => {
   const handleEventClick = (clickedEvent) => {
     const clickedTask = tasks.find((task) => task.title === clickedEvent.title);
     if (clickedTask) {
+      // Open a modal to show task details and provide edit and delete options
       setTaskDetails(clickedTask);
+      setShowAddTaskModal(false); // Close the add task modal if open
     }
   };
 
-  const handleDateClick = (date) => {
-    setSelectedDate(date);
-  };
+  
 
   const getEventColor = (priority) => {
     switch (priority) {
@@ -234,6 +238,26 @@ const filteredTasks = sortedTasks.filter((task) => {
         return "#008000";
       default:
         return "#000000";
+    }
+  };
+
+  const handleEditTask = (task) => {
+    // Set the task details for editing
+    setTaskDetails(task);
+    // Open the AddTaskPage modal
+    setShowAddTaskModal(true);
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      // Send a DELETE request to delete the task
+      await axios.delete(`http://localhost:5000/tasks/${taskId}`);
+      // Fetch the updated tasks list
+      fetchTasks();
+      // Close the task details modal
+      setTaskDetails(null);
+    } catch (error) {
+      console.error("Error deleting task:", error);
     }
   };
 
@@ -380,41 +404,49 @@ const filteredTasks = sortedTasks.filter((task) => {
         </div>
         <div className="calendar-container">
           <FullCalendar
-            className="google-calendar"
-            value={selectedDate}
-            onClickDay={(dateInfo) => handleDateClick(dateInfo.date)}
-            plugins={[dayGridPlugin]}
+            plugins={[
+              dayGridPlugin,
+              timeGridPlugin,
+              interactionPlugin,
+              listPlugin,
+            ]}
             initialView="dayGridMonth"
-            events={tasks.map((task, index) => ({
+            headerToolbar={{
+              left: "prev,next today",
+              center: "title",
+              right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
+            }}
+            events={tasks.map((task) => ({
               title: task.title,
               start: task.dueDateTime,
               backgroundColor: getEventColor(task.priority),
               borderColor: "transparent",
-              classNames: ["event-indicator"],
-              rendering: "background", // Render events as background
-              content: (
-                <div
-                  className="event-indicator-bar"
-                  style={{ height: `${index * 10}px` }}
-                ></div>
-              ),
             }))}
             eventClick={(eventInfo) => handleEventClick(eventInfo.event)}
             dateClick={(dateInfo) => setSelectedDate(dateInfo.date)}
+            editable={true}
+            selectable={true}
+            select={(info) => {
+              setSelectedDate(info.startStr);
+              setShowAddTaskModal(true);
+            }}
+            eventDrop={(info) => {
+              const updatedTask = {
+                ...tasks.find((task) => task.title === info.event.title),
+                dueDateTime: info.event.start,
+              };
+              // Update the task in the backend and state
+              axios
+                .put(
+                  `http://localhost:5000/tasks/${updatedTask._id}`,
+                  updatedTask
+                )
+                .then((response) => fetchTasks())
+                .catch((error) =>
+                  console.error("Error updating task date:", error)
+                );
+            }}
           />
-          {/* Task Details */}
-          {taskDetails && (
-            <div className="task-details">
-              <h3>{taskDetails.title}</h3>
-              <p>{taskDetails.description}</p>
-              <p>
-                Due Date:{" "}
-                {new Date(taskDetails.dueDateTime).toLocaleDateString()}
-              </p>
-              <p>Priority: {taskDetails.priority}</p>
-              <p>Completed: {taskDetails.completed ? "Yes" : "No"}</p>
-            </div>
-          )}
         </div>
       </div>
       {showAddTaskModal && (
@@ -425,13 +457,14 @@ const filteredTasks = sortedTasks.filter((task) => {
             </span>
             <AddTaskPage
               userId={id}
+              task={taskDetails} // Pass the task details for editing
               closeModal={() => setShowAddTaskModal(false)}
               updateTasks={handleAddTask}
             />
           </div>
         </div>
       )}
-      {taskDetails && (
+      {taskDetails && !showAddTaskModal && (
         <div className="modal">
           <div className="modal-content">
             <span className="close" onClick={closeTaskDetailsModal}>
@@ -446,6 +479,15 @@ const filteredTasks = sortedTasks.filter((task) => {
               </p>
               <p>Priority: {taskDetails.priority}</p>
               <p>Completed: {taskDetails.completed ? "Yes" : "No"}</p>
+              {/* Add edit and delete buttons */}
+              <div className="task-actions">
+                <button onClick={() => handleEditTask(taskDetails)}>
+                  Edit
+                </button>
+                <button onClick={() => handleDeleteTask(taskDetails._id)}>
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         </div>
