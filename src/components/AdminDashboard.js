@@ -22,7 +22,6 @@ import './AdminDashboard.css'; // Import the CSS file
 const AdminDashboard = () => {
   return (
     <div className="admin-dashboard-container"> {/* Apply the container class */}
-      <h1 className="admin-dashboard-heading">Welcome to the Admin Dashboard</h1> {/* Apply the heading class */}
       <div className="user-management-section"> {/* Apply the user management section class */}
         <UserManagement />
       </div>

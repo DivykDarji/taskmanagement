@@ -3,24 +3,26 @@
 /* Style the container for the calendar */
 .calendar-container {
   margin-top: 20px;
-  width: 100%;
-  padding: 0 10px;
+  padding: 20px;
+  background-color: #ffffff; /* White background */
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Style the FullCalendar */
 .fc {
   max-width: 100%;
   background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
   overflow: hidden;
 }
 
 /* Style the calendar header */
 .fc-header-toolbar {
-  background-color: #f0f0f0;
-  color: #333333;
-  border-bottom: 1px solid #dddddd;
+  background-color: #ffffff;
+  color: #202124; /* Google Calendar text color */
+  border-radius: 15px 15px 0 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 10px 15px;
   display: flex;
   justify-content: space-between;
@@ -28,69 +30,49 @@
 }
 
 .fc-header-toolbar .fc-button {
-  background-color: transparent;
-  color: #007aff;
-  border: 1px solid #007aff;
-  border-radius: 4px;
-  padding: 5px 10px;
+  background-color: #1a73e8; /* Google Calendar blue buttons */
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 15px;
   margin: 0 5px;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s;
 }
 
 .fc-header-toolbar .fc-button:hover {
-  background-color: #007aff;
-  color: #ffffff;
+  background-color: #0f62fe; /* Darker blue on hover */
 }
 
 /* Style the calendar views */
 .fc-view {
   background-color: #ffffff;
-  border-radius: 0 0 12px 12px;
+  border-radius: 0 0 15px 15px;
   padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Style individual day cells */
 .fc-day {
-  border: 1px solid #f0f0f0;
+  border: none;
 }
 
 .fc-day:hover {
-  background-color: #f9f9f9;
+  background-color: #f9f9f9; /* Light gray on hover */
   cursor: pointer;
-}
-
-/* Day View */
-.fc-timeGridDay-view .fc-col-header-cell {
-  border-right: 1px solid #f0f0f0;
-}
-
-/* Week View */
-.fc-timeGridWeek-view .fc-col-header-cell {
-  border-right: 1px solid #f0f0f0;
-}
-
-/* List View */
-.fc-listWeek-view .fc-list-item {
-  background-color: #f9f9f9;
-  border: 1px solid #f0f0f0;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  padding: 10px;
 }
 
 /* Style the calendar events */
 .fc-event {
-  background-color: #007aff;
+  background-color: #1a73e8; /* Google Calendar blue events */
   border: none;
-  color: #ffffff;
-  border-radius: 5px;
-  padding: 5px;
+  color: #ffffff; /* White text */
+  border-radius: 10px;
+  padding: 8px 12px;
   transition: background-color 0.3s;
 }
 
 .fc-event:hover {
-  background-color: #0056b3;
+  background-color: #0f62fe; /* Darker blue on hover */
   cursor: pointer;
 }
 
@@ -99,133 +81,52 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 14px;
+  font-size: 16px;
   transition: color 0.3s;
 }
 
 /* Hover effect for event title */
 .fc-event:hover .fc-event-title {
-  color: #ffcc00; /* Change the color on hover */
+  color: #ffcc00; /* Yellow on hover */
 }
 
 /* Style the calendar event details */
 .fc-event-dot {
-  background-color: #ffffff;
+  background-color: #ffffff; /* White dot */
   border-radius: 50%;
   margin-right: 5px;
 }
 
 .fc-event-time {
-  font-size: 0.8em;
-}
-
-/* Style the calendar event popover */
-.fc-popover {
-  background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
-  overflow: hidden;
-  z-index: 9999; /* Ensure popover is on top */
-  animation: fadeIn 0.3s ease-in-out, slideUp 0.3s ease-in-out;
-}
-
-/* Fade-in animation for popover */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Slide-up animation for popover */
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* Style the calendar event popover content */
-.fc-popover .fc-popover-header {
-  background-color: #007aff;
-  color: #ffffff;
-  padding: 10px;
-  border-radius: 10px 10px 0 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.fc-popover .fc-popover-body {
-  padding: 15px;
-}
-
-/* Style the calendar event popover close button */
-.fc-popover .fc-close {
-  color: #ffffff;
-  font-size: 1.2em;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  transition: background-color 0.3s;
-}
-
-.fc-popover .fc-close:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-/* Additional Styles for Daygrid Day Events */
-.fc-daygrid-day-events {
-  position: relative;
-}
-
-.fc-daygrid-day-bottom {
-  display: none;
+  font-size: 0.9em;
 }
 
 /* Responsive Styles */
-
-/* For small devices (phones) */
 @media only screen and (max-width: 768px) {
   .calendar-container {
     margin-top: 10px;
+    padding: 15px; /* Adjust padding for smaller screens */
   }
 
   .fc-header-toolbar {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center; /* Center align buttons */
   }
 
   .fc-header-toolbar .fc-button {
-    margin-bottom: 5px;
+    margin: 5px; /* Increase button margin for spacing */
   }
 
   .fc-view {
-    padding: 10px;
+    padding: 15px; /* Reduce padding for smaller screens */
   }
-}
 
-/* For medium devices (tablets) */
-@media only screen and (min-width: 769px) and (max-width: 1024px) {
-  .calendar-container {
-    margin-top: 15px;
+  .fc-event-title {
+    font-size: 14px; /* Decrease font size for event titles */
   }
-}
 
-/* For large devices (desktops) */
-@media only screen and (min-width: 1025px) {
-  .calendar-container {
-    margin-top: 20px;
+  .fc-event-time {
+    font-size: 0.8em; /* Decrease font size for event times */
   }
+  
 }

@@ -28,8 +28,8 @@ const Dashboard = () => {
   const [sortOption, setSortOption] = useState("dueDate");
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksForToday, setTasksForToday] = useState([]); // Added tasksForToday state variable
- // eslint-disable-next-line
-const [selectedDate, setSelectedDate] = useState(new Date());
+  // eslint-disable-next-line
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const tasksPerPage = 5;
 
   // Define fetchTasks function outside useEffect
@@ -97,20 +97,42 @@ const [selectedDate, setSelectedDate] = useState(new Date());
         .split("T")[0];
       return taskDueDate === today;
     });
+    console.log("Tasks for today:", todayTasks);
     setTasksForToday(todayTasks);
   }, [tasks]);
 
   // Handle task completion
-  const handleTaskCompletion = async (taskId, userId) => {
+  const handleTaskCompletion = async (taskId) => {
+    const confirmCompletion = window.confirm(
+      "Are you sure you want to complete this task?"
+    );
+    if (!confirmCompletion) {
+      return; // Exit if the user cancels the action
+    }
+
     try {
       // Update task completion status in backend
-      await axios.put(
-        `http://localhost:5000/tasks/user/${userId}/${taskId}/complete`
+      await axios.put(`http://localhost:5000/tasks/complete/${taskId}`);
+
+      // Find the completed task and update its status in the local state
+      const updatedTasks = tasks.map((task) =>
+        task._id === taskId
+          ? { ...task, completed: true, completedAt: new Date().toISOString() }
+          : task
       );
-      fetchTasks(); // Refresh tasks after completing a task
-      setActiveTab("Recently"); // Switch to "Recently" tab
+
+      // Update tasks state with the modified task
+      setTasks(updatedTasks);
+
+      // Display a success message to the user
+      setSuccessMessage("Task completed successfully");
+
+      // Switch to the Recently tab
+      setActiveTab("Recently");
     } catch (error) {
       console.error("Error updating task completion:", error);
+      // Display an error message to the user
+      setSuccessMessage("Failed to complete the task. Please try again later.");
     }
   };
 
@@ -153,6 +175,8 @@ const [selectedDate, setSelectedDate] = useState(new Date());
   const formatDate = (dateString) => {
     return new Date(dateString.split("T")[0]); // Extract date part and convert to Date object
   };
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   // Filter tasks based on active tab
   const filteredTasks = sortedTasks.filter((task) => {
@@ -165,29 +189,42 @@ const [selectedDate, setSelectedDate] = useState(new Date());
       ? formatDate(task.completedAt.split("T")[0])
       : null;
 
-    // Switch statement to handle different tabs
-    switch (activeTab) {
-      case "Recently":
-        // Display completed tasks within the last seven days in the "Recently" tab
-        return task.completed && completedAtDate > sevenDaysFromNow;
+    // Debugging: Log task details
+    console.log("Task:", task);
+    console.log("Task completed:", task.completed);
+    console.log("Completed at date:", completedAtDate);
+    console.log("Seven days ago:", sevenDaysAgo);
 
-      case "Today":
-        // Display tasks due today and not completed in the "Today" tab
-        return (
-          taskDueDate.getTime() === new Date(today).getTime() && !task.completed
-        );
+  // Switch statement to handle different tabs
+  switch (activeTab) {
+    case "Recently":
+      // Display completed tasks on or after today in the "Recently" tab
+      return task.completed ;
 
-      case "Upcoming":
-        // Display tasks due in the future and within the next seven days in the "Upcoming" tab
-        return taskDueDate > new Date(today) && taskDueDate <= sevenDaysFromNow;
-      case "Later":
-        // Display tasks due beyond the current month in the "Later" tab
-        return taskDueDate > lastDayOfCurrentMonth && !task.completed;
-      default:
-        // For any other tab, return true (display all tasks)
-        return true;
-    }
-  });
+    case "Today":
+      // Display tasks due today and not completed in the "Today" tab
+      return (
+        taskDueDate.getTime() === new Date(today).getTime() && !task.completed
+      );
+
+    case "Upcoming":
+      // Display tasks due in the future and within the next seven days in the "Upcoming" tab
+      return (
+        taskDueDate > new Date(today) &&
+        taskDueDate <= sevenDaysFromNow &&
+        !task.completed
+      );
+    case "Later":
+      // Display tasks due beyond the current month in the "Later" tab
+      return (
+        taskDueDate > lastDayOfCurrentMonth &&
+        !task.completed
+      );
+    default:
+      // For any other tab, return true (display all tasks)
+      return true;
+  }
+});
 
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
@@ -225,8 +262,6 @@ const [selectedDate, setSelectedDate] = useState(new Date());
       setShowAddTaskModal(false); // Close the add task modal if open
     }
   };
-
-  
 
   const getEventColor = (priority) => {
     switch (priority) {
@@ -272,7 +307,8 @@ const [selectedDate, setSelectedDate] = useState(new Date());
               <h2 className="profile-name">
                 Hello, {userData ? userData.username : "Loading...."}!
               </h2>
-              <p>You have {tasksForToday.length} tasks today</p>
+              <p>You have {tasksForToday.filter(task => !task.completed).length} for today</p>
+
             </div>
           </div>
           <div className="profile-details">
@@ -481,10 +517,10 @@ const [selectedDate, setSelectedDate] = useState(new Date());
               <p>Completed: {taskDetails.completed ? "Yes" : "No"}</p>
               {/* Add edit and delete buttons */}
               <div className="task-actions">
-                <button onClick={() => handleEditTask(taskDetails)}>
+                <button class="modal-button edit" onClick={() => handleEditTask(taskDetails)}>
                   Edit
                 </button>
-                <button onClick={() => handleDeleteTask(taskDetails._id)}>
+                <button  class="modal-button delete" onClick={() => handleDeleteTask(taskDetails._id)}>
                   Delete
                 </button>
               </div>
