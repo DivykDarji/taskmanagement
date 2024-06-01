@@ -1,22 +1,47 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
-const mongoose = require("mongoose"); // Import mongoose
-const jwtUtils = require('./jwtUtils'); // Import JWT utility functions
-const authMiddleware = require('./authMiddleware'); // Import authenticateToken middleware
-
+const mongoose = require("mongoose");
+const jwtUtils = require("./jwtUtils");
+const authMiddleware = require("./authMiddleware");
 const router = express.Router();
-const firebaseApp = require('../src/firebaseConfig');
-const { getAuth } = require('firebase/auth'); // Keep using CommonJS require syntax
+const firebaseApp = require("../src/firebaseConfig");
+const { getAuth } = require("firebase/auth");
 const auth = getAuth(firebaseApp);
+const path = require("path");
+// Import multer and other required modules for file uploads
+const multer = require("multer");
+const crypto = require("crypto");
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/profileImages");
+  },
+  filename: function (req, file, cb) {
+    crypto.randomBytes(16, (err, raw) => {
+      if (err) return cb(err);
+      const filename = `${uuidv4()}${path.extname(file.originalname)}`; // Generate GUID + original extension
+      cb(null, filename);
+    });
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.post("/signup", async (req, res) => {
   try {
-    const { email, username, phonenumber, password, authMethod, isAdmin } = req.body;
+    const { email, username, phonenumber, password, authMethod, isAdmin } =
+      req.body;
 
     // Validate input
     if (!email || !username || !phonenumber || !password || !authMethod) {
-      return res.status(400).json({ error: "Email, username, phonenumber, password, and authMethod are required" });
+      return res.status(400).json({
+        error:
+          "Email, username, phonenumber, password, and authMethod are required",
+      });
     }
 
     // Check if the email is already in use
@@ -27,7 +52,7 @@ router.post("/signup", async (req, res) => {
 
     // Save user data based on authMethod
     let newUser;
-    if (authMethod === 'traditional') {
+    if (authMethod === "traditional") {
       const hashedPassword = await bcrypt.hash(password, 10);
       newUser = new User({
         email,
@@ -35,15 +60,15 @@ router.post("/signup", async (req, res) => {
         phonenumber,
         password: hashedPassword,
         isdelete: false,
-        authMethod: 'traditional',
-        isAdmin: false // Default to false if isAdmin is not provided
+        authMethod: "traditional",
+        isAdmin: false, // Default to false if isAdmin is not provided
       });
-    } else if (authMethod === 'firebase') {
+    } else if (authMethod === "firebase") {
       newUser = new User({
         email,
         isdelete: false,
-        authMethod: 'firebase',
-        isAdmin: false // Default to false if isAdmin is not provided
+        authMethod: "firebase",
+        isAdmin: false, // Default to false if isAdmin is not provided
       });
     } else {
       return res.status(400).json({ error: "Invalid authMethod" });
@@ -57,7 +82,6 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ error: "Error signing up" });
   }
 });
-
 
 // Login (POST)
 router.post("/login", async (req, res) => {
@@ -85,7 +109,7 @@ router.post("/login", async (req, res) => {
           username: user.username,
           email: user.email,
           phonenumber: user.phonenumber,
-          isAdmin: user.isAdmin  // Include isAdmin status
+          isAdmin: user.isAdmin, // Include isAdmin status
         };
 
         res.status(200).json({
@@ -105,7 +129,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Error during login" });
   }
 });
-
 
 router.post("/check-email", async (req, res) => {
   try {
@@ -153,14 +176,12 @@ router.get("/users", async (req, res) => {
     if (req.query.search) {
       // Use $or operator to search by username or email
       query.$or = [
-        { username: { $regex: req.query.search, $options: 'i' } }, // Case-insensitive search for username
-        { email: { $regex: req.query.search, $options: 'i' } } // Case-insensitive search for email
+        { username: { $regex: req.query.search, $options: "i" } }, // Case-insensitive search for username
+        { email: { $regex: req.query.search, $options: "i" } }, // Case-insensitive search for email
       ];
     }
 
-    const users = await User.find(query, "-password")
-                             .skip(skip)
-                             .limit(limit);
+    const users = await User.find(query, "-password").skip(skip).limit(limit);
 
     const totalCount = await User.countDocuments(query);
     const totalPages = Math.ceil(totalCount / limit);
@@ -172,14 +193,12 @@ router.get("/users", async (req, res) => {
   }
 });
 
-
-
 // Fetch a single user by ID and mark it as deleted
 // Fetch a single user by ID
 router.get("/users/:id", async (req, res) => {
   try {
     const userId = req.params.id;
-    
+
     // Validate if userId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: "Invalid user ID" });
@@ -196,9 +215,6 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
-
-
-
 router.post("/users", async (req, res) => {
   try {
     const { username, email, phonenumber, password } = req.body;
@@ -210,7 +226,9 @@ router.post("/users", async (req, res) => {
       return res.status(400).json({ error: "Email is already in use" });
     }
     if (password.length < 8) {
-      return res.status(400).json({ error: "Password must be at least 8 characters long" });
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters long" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
@@ -218,7 +236,7 @@ router.post("/users", async (req, res) => {
       email,
       phonenumber,
       password: hashedPassword,
-      isAdmin: false // Default isAdmin to false for new users
+      isAdmin: false, // Default isAdmin to false for new users
     });
     await newUser.save();
     res.status(201).json({
@@ -228,7 +246,7 @@ router.post("/users", async (req, res) => {
         username: newUser.username,
         email: newUser.email,
         phonenumber: newUser.phonenumber,
-        isAdmin: newUser.isAdmin // Include isAdmin in the response
+        isAdmin: newUser.isAdmin, // Include isAdmin in the response
       },
     });
   } catch (error) {
@@ -237,24 +255,34 @@ router.post("/users", async (req, res) => {
   }
 });
 
-router.put("/users/:id", async (req, res) => {
+// Update user route handler
+router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
   try {
-    const { username, email, phonenumber, password , isAdmin} = req.body;
+    const { username, email, phonenumber, password, isAdmin } = req.body;
     const userId = req.params.id;
     const user = await User.findById(userId);
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
     // Update fields if they exist in the request body
     user.username = username || user.username;
     user.email = email || user.email;
     user.phonenumber = phonenumber || user.phonenumber;
-    user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin; // Update isAdmin if provided, otherwise keep the existing value
+    user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
+
     // Update password only if it's provided
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       user.password = hashedPassword;
     }
+
+    // Update profile image if it's uploaded
+    if (req.file) {
+      user.profileImage = req.file.filename;
+    }
+
     await user.save();
     res.json({ message: "User updated successfully", user });
   } catch (error) {
@@ -263,7 +291,6 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
-
 router.delete("/users/:id", async (req, res) => {
   try {
     const userId = req.params.id;
@@ -271,7 +298,7 @@ router.delete("/users/:id", async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    user.isdelete = true; 
+    user.isdelete = true;
     await user.save();
     res.json({ message: "User marked as deleted", user });
   } catch (error) {
@@ -279,6 +306,12 @@ router.delete("/users/:id", async (req, res) => {
     res.status(500).json({ error: "Error marking user as deleted" });
   }
 });
+
+// Serve static files directly using express.static middleware
+router.use(
+  "/uploads",
+  express.static(path.join(__dirname, "../uploads/profileImages"))
+);
 
 // const isAdmin = (req, res, next) => {
 //   if (req.user && req.user.isAdmin) {
@@ -299,9 +332,11 @@ router.delete("/users/:id", async (req, res) => {
 router.get("/protected-route", authMiddleware.authenticateToken, (req, res) => {
   // If the execution reaches here, it means the token is valid
   // You can access the user object from req.user
-  res.json({ message: "You have access to this protected route", user: req.user });
+  res.json({
+    message: "You have access to this protected route",
+    user: req.user,
+  });
 });
-
 
 module.exports = router;
 

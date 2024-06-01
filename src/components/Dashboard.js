@@ -56,6 +56,7 @@ const Dashboard = () => {
           `http://localhost:5000/auth/users/${id}`
         );
         if (response.data && response.data.user) {
+          // Update userData state with the fetched user data including the profileImage
           setUserData(response.data.user);
         } else {
           console.error("No user data found in the API response");
@@ -185,46 +186,37 @@ const Dashboard = () => {
 
     // Extract task due date and completed date (if available) and format them
     const taskDueDate = formatDate(task.dueDateTime.split("T")[0]);
+    // eslint-disable-next-line
     const completedAtDate = task.completedAt
       ? formatDate(task.completedAt.split("T")[0])
       : null;
+    // Switch statement to handle different tabs
+    switch (activeTab) {
+      case "Recently":
+        // Display completed tasks on or after today in the "Recently" tab
+        return task.completed;
 
-    // Debugging: Log task details
-    console.log("Task:", task);
-    console.log("Task completed:", task.completed);
-    console.log("Completed at date:", completedAtDate);
-    console.log("Seven days ago:", sevenDaysAgo);
+      case "Today":
+        // Display tasks due today and not completed in the "Today" tab
+        return (
+          taskDueDate.getTime() === new Date(today).getTime() && !task.completed
+        );
 
-  // Switch statement to handle different tabs
-  switch (activeTab) {
-    case "Recently":
-      // Display completed tasks on or after today in the "Recently" tab
-      return task.completed ;
-
-    case "Today":
-      // Display tasks due today and not completed in the "Today" tab
-      return (
-        taskDueDate.getTime() === new Date(today).getTime() && !task.completed
-      );
-
-    case "Upcoming":
-      // Display tasks due in the future and within the next seven days in the "Upcoming" tab
-      return (
-        taskDueDate > new Date(today) &&
-        taskDueDate <= sevenDaysFromNow &&
-        !task.completed
-      );
-    case "Later":
-      // Display tasks due beyond the current month in the "Later" tab
-      return (
-        taskDueDate > lastDayOfCurrentMonth &&
-        !task.completed
-      );
-    default:
-      // For any other tab, return true (display all tasks)
-      return true;
-  }
-});
+      case "Upcoming":
+        // Display tasks due in the future and within the next seven days in the "Upcoming" tab
+        return (
+          taskDueDate > new Date(today) &&
+          taskDueDate <= sevenDaysFromNow &&
+          !task.completed
+        );
+      case "Later":
+        // Display tasks due beyond the current month in the "Later" tab
+        return taskDueDate > lastDayOfCurrentMonth && !task.completed;
+      default:
+        // For any other tab, return true (display all tasks)
+        return true;
+    }
+  });
 
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
@@ -307,13 +299,20 @@ const Dashboard = () => {
               <h2 className="profile-name">
                 Hello, {userData ? userData.username : "Loading...."}!
               </h2>
-              <p>You have {tasksForToday.filter(task => !task.completed).length} for today</p>
-
+              <p>
+                You have{" "}
+                {tasksForToday.filter((task) => !task.completed).length} for
+                today
+              </p>
             </div>
           </div>
           <div className="profile-details">
             <img
-              src="https://placehold.co/40x40"
+              src={
+                userData && userData.profileImage
+                  ? `http://localhost:5000/uploads/profileImages/${userData.profileImage}`
+                  : "/default-profile-image.jpg"
+              }
               alt="Profile"
               className="profile-image"
             />
@@ -334,7 +333,15 @@ const Dashboard = () => {
             {/* Debugging: Check if showContextMenu is true */}
             {showContextMenu && (
               <div className="context-menu active">
-                <button onClick={handleLogout}>Logout</button>
+                <button className="context-menu-item" onClick={handleLogout}>
+                  Logout
+                </button>
+                <button
+                  className="context-menu-item"
+                  onClick={() => navigate(`/profile/${id}`)}
+                >
+                  My Profile
+                </button>
               </div>
             )}
           </div>
@@ -517,10 +524,16 @@ const Dashboard = () => {
               <p>Completed: {taskDetails.completed ? "Yes" : "No"}</p>
               {/* Add edit and delete buttons */}
               <div className="task-actions">
-                <button class="modal-button edit" onClick={() => handleEditTask(taskDetails)}>
+                <button
+                  class="modal-button edit"
+                  onClick={() => handleEditTask(taskDetails)}
+                >
                   Edit
                 </button>
-                <button  class="modal-button delete" onClick={() => handleDeleteTask(taskDetails._id)}>
+                <button
+                  class="modal-button delete"
+                  onClick={() => handleDeleteTask(taskDetails._id)}
+                >
                   Delete
                 </button>
               </div>

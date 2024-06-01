@@ -14,6 +14,7 @@ import ThankYouSignup from "./components/Thankyou";
 import UserManagement from "./components/Usermanagement";
 import UserEdit from './components/UserEdit';
 import AddTaskPage from "./components/AddTaskPage";
+import ProfilePage from "./components/ProfilePage"; // Import the ProfilePage component
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/admin/dashboard/:userId" element={<UserManagement />} /> {/* Updated route for UserManagement */}
           <Route path="/edit-user/:id" element={<UserEdit />} />
           <Route path={`/add-task/:id`} element={<AddTaskPage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} /> 
           <Route path="/" element={<Banner />} />
         </Routes>
         <Box />

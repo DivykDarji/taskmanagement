@@ -1,4 +1,6 @@
 divy-portfolio-website/
+|--uploads
+      |--profieImages/
 |-- config 
       |--serviceAccountKey.json
       |--client_secret_1003759930318-1kuvohpeepiffkgsfuprn0rq2g1c1qrr.apps.googleusercontent.com.json
@@ -24,6 +26,7 @@ divy-portfolio-website/
                    |--Signup.js
                    |--Dashboard.css
                    |--Dashboard.js
+                   |--ProfilePage.js
                    |--Sidebar.js
                    |--Thankyou.css
                    |--Thankyou.js

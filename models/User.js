@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
   isdelete: { type: Boolean, default: false },
   authMethod: { type: String }, // Add authMethod field to differentiate authentication method
   isAdmin: { type: Boolean, default: false } , // Add isAdmin field to indicate admin status
-  tasks: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' }
+  tasks: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
+  profileImage: { type: String, default: '' } // Add profileImage field to store the path of the profile image
 });
 
 const User = mongoose.model("User", userSchema);

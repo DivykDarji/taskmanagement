@@ -1,0 +1,178 @@
+/* ProfilePage.css */
+
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .profile-image {
+    display: block;
+    max-width: 200px;
+    margin-top: 10px;
+    border-radius: 5px;
+    
+  }
+  
+  input[type="file"] {
+    display: none; /* Hide the default file input */
+}
+
+.custom-file-input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+}
+
+.custom-file-input::before {
+    content: 'Choose File';
+    display: inline-block;
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.custom-file-input:hover::before {
+    background-color: #45a049;
+}
+
+.custom-file-input:focus::before {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.custom-file-input:disabled::before {
+    background-color: #dddddd;
+    color: #999999;
+    cursor: not-allowed;
+}
+
+.custom-file-input:disabled:hover::before {
+    background-color: #dddddd;
+}
+
+.custom-file-input-container {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    margin: 20px;
+  }
+  
+  .custom-file-label {
+    display: block;
+    padding: 10px 20px;
+    background-color: #f0f0f0;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .custom-file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .custom-file-input-container:hover .custom-file-label {
+    background-color: #e0e0e0;
+  }
+  
+  .custom-file-label-text {
+    display: inline-block;
+  }
+  
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background-color: #45a049;
+  }
+  
+  .success-message,
+  .error-message {
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+  }
+  
+  .success-message {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+  .error-message {
+    background-color: #f44336;
+    color: #fff;
+  }
+  .dashboard-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 50px; /* Adjust width as needed */
+    height: auto; /* Maintain aspect ratio */
+  }
+  @media screen and (max-width: 768px) {
+    /* Adjust styles for smaller screens */
+    .profile-container {
+        max-width: 90%; /* Adjust container width for smaller screens */
+        border-radius: 0; /* Remove border radius on smaller screens if necessary */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Further adjustments for extra small screens */
+    .profile-container {
+        padding: 10px; /* Adjust padding for extra small screens */
+    }
+}

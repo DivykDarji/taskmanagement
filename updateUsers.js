@@ -1,26 +1,26 @@
+const User = require("./models/User"); // Import the User model
 
-const User = require("./models/User");
-const Task = require("./models/task"); // Assuming you have a Task model defined
-
-
-async function updateExistingUsersWithIsAdmin() {
+async function updateExistingUsersWithProfileImage() {
     try {
         // Find all existing users
         const users = await User.find({});
 
         // Iterate over each user and update properties
         for (const user of users) {
-            // Add isAdmin field if it doesn't already exist
-            if (!user.hasOwnProperty('isAdmin')) {
-                user.isAdmin = false; // Set default value to false
+            // Add profileImage field if it doesn't already exist
+            if (!user.hasOwnProperty('profileImage')) {
+                user.profileImage = ''; // Set default value to an empty string
                 await user.save(); // Save the updated user
             }
         }
 
-        console.log("Existing users updated with isAdmin field successfully");
+        console.log("Existing users updated successfully with profileImage field");
     } catch (error) {
-        console.error("Error updating existing users with isAdmin field:", error);
+        console.error("Error updating existing users with profileImage field:", error);
     }
 }
 
-module.exports = updateExistingUsersWithIsAdmin;
+module.exports = updateExistingUsersWithProfileImage;
+// Call updateExistingUsers asynchronously
+  // await updateExistingUsersWithProfileImage();
+  
