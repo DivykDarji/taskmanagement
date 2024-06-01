@@ -333,14 +333,14 @@ const Dashboard = () => {
             {/* Debugging: Check if showContextMenu is true */}
             {showContextMenu && (
               <div className="context-menu active">
-                <button className="context-menu-item" onClick={handleLogout}>
-                  Logout
-                </button>
                 <button
                   className="context-menu-item"
                   onClick={() => navigate(`/profile/${id}`)}
                 >
                   My Profile
+                </button>
+                <button className="context-menu-item" onClick={handleLogout}>
+                  Logout
                 </button>
               </div>
             )}
