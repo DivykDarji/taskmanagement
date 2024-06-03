@@ -11,6 +11,7 @@ import listPlugin from "@fullcalendar/list";
 import { FaBars, FaAngleDown } from "react-icons/fa";
 import AddTaskPage from "./AddTaskPage";
 import "./dashboard-calendar.css";
+import { Tabs, Tab, Box, Typography, Select, MenuItem } from "@mui/material";
 
 const Dashboard = () => {
   const { id } = useParams();
@@ -347,44 +348,45 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="tasks">
-          <h3 className="tasks-title">My tasks</h3>
-          <div className="task-options">
-            <span
-              className={`task-option ${
-                activeTab === "Recently" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("Recently")}
+          <Box sx={{ marginBottom: "20px" }}>
+            <Tabs
+              value={activeTab}
+              onChange={(event, newValue) => setActiveTab(newValue)}
+              variant="scrollable"
+              scrollButtons="auto"
+              sx={{ "& .MuiTabs-scroller": { paddingBottom: "8px" } }}
             >
-              Recently
-            </span>
-            <span
-              className={`task-option ${activeTab === "Today" ? "active" : ""}`}
-              onClick={() => setActiveTab("Today")}
-            >
-              Today
-            </span>
-            <span
-              className={`task-option ${
-                activeTab === "Upcoming" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("Upcoming")}
-            >
-              Upcoming
-            </span>
-            <span
-              className={`task-option ${activeTab === "Later" ? "active" : ""}`}
-              onClick={() => setActiveTab("Later")}
-            >
-              Later
-            </span>
-          </div>
-          <div className="task-sorting">
-            <label>Sort by: </label>
-            <select value={sortOption} onChange={handleSortChange}>
-              <option value="dueDate">Due Date</option>
-              <option value="priority">Priority</option>
-            </select>
-          </div>
+              <Tab
+                label="Recently"
+                value="Recently"
+                sx={{ marginRight: "10px" }} // Add margin-right here
+              />
+              <Tab
+                label="Today"
+                value="Today"
+                sx={{ marginRight: "10px" }} // Add margin-right here
+              />
+              <Tab
+                label="Upcoming"
+                value="Upcoming"
+                sx={{ marginRight: "10px" }} // Add margin-right here
+              />
+              <Tab
+                label="Later"
+                value="Later"
+                sx={{ marginRight: "10px" }} // Add margin-right here
+              />
+            </Tabs>
+            <div className="task-sorting">
+              <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                Sort by:{" "}
+              </Typography>
+              <Select value={sortOption} onChange={handleSortChange}>
+                <MenuItem value="dueDate">Due Date</MenuItem>
+                <MenuItem value="priority">Priority</MenuItem>
+              </Select>
+            </div>
+          </Box>
           {tasksError ? (
             <div className="error">{tasksError}</div>
           ) : (

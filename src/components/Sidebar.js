@@ -43,14 +43,9 @@ const Sidebar = ({ isOpen }) => {
         <div className="sidebar-item"><FaFileAlt /> Documents</div>
         <div className="sidebar-item"><FaCog /> Settings</div>
       </div>
-      <div className="workspace">
-        <span>Workspace</span>
-        <select>
-          <option>Tino Digital Agency</option>
-        </select>
-      </div>
     </div>
   );
 };
 
 export default Sidebar;
+

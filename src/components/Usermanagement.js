@@ -472,11 +472,11 @@ const UserManagement = () => {
           </div>
         </div>
         <div className="profile-details">
-          <img
+          {/* <img
             src="https://placehold.co/40x40"
             alt="Profile"
             className="profile-image"
-          />
+          /> */}
           <div className="profile-info">
             <div className="profile-name-container">
               <h2 className="profile-name">Admin</h2>

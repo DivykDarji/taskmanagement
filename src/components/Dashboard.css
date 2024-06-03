@@ -24,7 +24,7 @@ body, html {
 }
 
 .sidebar.open .sidebar-toggle-icon {
-  transform: translateX(230px);
+  transform: translateX(230px); /* Adjust based on sidebar width */
 }
 
 /* Sidebar */
@@ -43,52 +43,59 @@ body, html {
 }
 
 .sidebar.open {
-  width: 250px;
+  width: 250px; /* Adjust sidebar width as needed */
 }
 
-.sidebar h2 {
+.sidebar-header {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 18px;
-  letter-spacing: 2px;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.sidebar-title {
+  font-size: 22px;
+  margin: 0;
 }
 
 .sidebar-items {
-  display: flex;
-  flex-direction: column;
   margin-top: 20px;
 }
 
 .sidebar-item {
-  width: 100%;
   padding: 15px 20px;
   cursor: pointer;
-  text-align: left;
   transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
 }
 
 .sidebar-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #333; /* Change hover color */
 }
 
-.workspace {
-  margin-top: auto;
-  color: #888;
-  padding: 20px;
+.sidebar-item svg {
+  margin-right: 10px;
 }
 
-.workspace span {
-  display: block;
-  margin-bottom: 10px;
+/* Mobile and Tablet Styles */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 200px; /* Adjust sidebar width for tablets */
+  }
 }
 
-.workspace select {
-  width: calc(100% - 40px);
-  padding: 10px;
-  background-color: #1c1c1c;
-  border: 1px solid #333;
-  color: #fff;
+@media (max-width: 768px) {
+  .sidebar {
+    width: 150px; /* Adjust sidebar width for mobile devices */
+  }
+
+  .sidebar.open {
+    width: 200px; /* Adjust open sidebar width for mobile devices */
+  }
 }
+
+
+
 
 /* Dashboard Container */
 .dashboard-container {
@@ -307,7 +314,7 @@ body, html {
 
 .task-options {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between; /* Changed to space-between to add space between tabs */
   margin-bottom: 20px;
 }
 
@@ -365,6 +372,7 @@ body, html {
   margin-top: 10px;
 }
 
+
 /* Priority Differentiation */
 .priority-high {
   border-left: 5px solid #ff4d4d;
@@ -389,7 +397,7 @@ body, html {
 
 /* Button Styling */
 .add-task-button {
-  background-color: #ff9800;
+  background-color:  #007bff;
   color: #fff;
   padding: 10px 20px;
   border: none;
@@ -401,10 +409,10 @@ body, html {
 }
 
 .add-task-button:hover {
-  background-color: #ffac33;
-  transform: scale(1.05);
+  background-color: #0056b3; /* Darker shade of the original background color */
+  transform: scale(1.05); /* Slightly increase the size on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
 }
-
 .button {
   display: inline-block;
   padding: 10px 20px;
