@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGoogle } from '@fortawesome/free-brands-svg-icons';
-import './Signup.css';
-const { getAuth } = require('firebase/auth'); // Use require syntax for CommonJS modules
-const firebaseApp = require('../firebaseConfig'); // Use require syntax for CommonJS modules
-const { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } = require('firebase/auth'); // Use require syntax for CommonJS modules
+
+
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import "./Signup.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const showIcon = process.env.PUBLIC_URL + "/view.png";
+const hideIcon = process.env.PUBLIC_URL + "/hide.png";
+
+const { getAuth } = require("firebase/auth");
+const firebaseApp = require("../firebaseConfig");
+const {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} = require("firebase/auth");
 
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    phonenumber: '',
-    password: '',
+    username: "",
+    email: "",
+    phonenumber: "",
+    password: "",
   });
-  const [signupResult, setSignupResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [isSignupWithGoogle ] = useState(false);
+  const [isSignupWithGoogle] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const auth = getAuth(firebaseApp);
 
@@ -27,22 +39,21 @@ const Signup = () => {
     e.preventDefault();
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+      for (const key in validationErrors) {
+        toast.error(validationErrors[key]);
+      }
       return;
     }
-    
+
     try {
       setLoading(true);
       if (isSignupWithGoogle) {
-        // Sign up with Google using Firebase Authentication
-         await handleSignupWithGoogle();
+        await handleSignupWithGoogle();
       } else {
-        // Traditional signup
-         await handleTraditionalSignup();
+        await handleTraditionalSignup();
       }
-      // Handle response accordingly
     } catch (error) {
-      // Handle error
+      toast.error("Error during signup. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -54,20 +65,31 @@ const Signup = () => {
       ...prevData,
       [name]: value,
     }));
-
-    // Validate email and phone number in real-time
-    if (name === 'email') {
+  
+    if (name === "email") {
       if (!isValidEmail(value)) {
-        setErrors((prevErrors) => ({ ...prevErrors, email: 'Invalid email format' }));
+        if (!errors.email) {
+          toast.error("Invalid email format");
+        }
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Invalid email format",
+        }));
       } else {
-        setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
+        setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
         checkEmailExists(value);
       }
-    } else if (name === 'phonenumber') {
+    } else if (name === "phonenumber") {
       if (!isValidPhoneNumber(value)) {
-        setErrors((prevErrors) => ({ ...prevErrors, phonenumber: 'Invalid phone number format' }));
+        if (!errors.phonenumber) {
+          toast.error("Invalid phone number format");
+        }
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          phonenumber: "Invalid phone number format",
+        }));
       } else {
-        setErrors((prevErrors) => ({ ...prevErrors, phonenumber: '' }));
+        setErrors((prevErrors) => ({ ...prevErrors, phonenumber: "" }));
       }
     }
   };
@@ -78,151 +100,179 @@ const Signup = () => {
       const provider = new GoogleAuthProvider();
       const response = await signInWithPopup(auth, provider);
 
-      // Redirect to thank you page upon successful authentication
       if (response.user) {
+        toast.success("Signup successful");
         navigate(`/thankyou-signup/${response.user.uid}`);
       }
     } catch (error) {
-      console.error('Error signing in with Google:', error);
-      setSignupResult({ message: 'Error signing in with Google. Please try again.', type: 'error' });
+      console.error("Error signing in with Google:", error);
+      toast.error("Error signing in with Google. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleTraditionalSignup = async () => {
-  try {
-    setLoading(true);
-    const { email, password, username, phonenumber } = formData;
-    const response = await createUserWithEmailAndPassword(auth, email, password);
-    await axios.post('http://localhost:5000/auth/signup', {
-      email,
-      username,
-      phonenumber,
-      password, // Include password in the request
-      authMethod: 'traditional', // Add authMethod field to specify traditional authentication
-    });
-    // Check the response from createUserWithEmailAndPassword
-    if (response.user) {
-      // Handle successful signup
-      setSignupResult({ message: 'Signup successful', type: 'success' });
-      setTimeout(() => {
-        navigate(`/thankyou-signup/${response.user.uid}?name=${encodeURIComponent(username)}`);
-      }, 2000);
+    try {
+      setLoading(true);
+      const { email, password, username, phonenumber } = formData;
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      await axios.post("http://localhost:5000/auth/signup", {
+        email,
+        username,
+        phonenumber,
+        password,
+        authMethod: "traditional",
+      });
+
+      await axios.post("http://localhost:5000/auth/send-email", {
+        email,
+        name: username,
+      });
+
+      if (response.user) {
+        toast.success("Signup successful");
+        setTimeout(() => {
+          navigate(
+            `/thankyou-signup/${response.user.uid}?name=${encodeURIComponent(
+              username
+            )}`
+          );
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error during traditional signup:", error);
+      toast.error("Error during signup. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    // Handle error
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const checkEmailExists = async (email) => {
     try {
-      const response = await axios.post('http://localhost:5000/auth/check-email', { email });
+      const response = await axios.post(
+        "http://localhost:5000/auth/check-email",
+        { email }
+      );
       if (response.data.exists) {
-        setErrors((prevErrors) => ({ ...prevErrors, email: 'Email already exists. Please log in.' }));
-      } else {
-        setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
+        toast.error("Email already exists");
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Email already exists",
+        }));
       }
     } catch (error) {
-      console.error('Error checking email:', error);
+      console.error("Error checking email existence:", error);
+      toast.error("Error checking email. Please try again.");
     }
   };
 
   const validateForm = (data) => {
     const errors = {};
-
-    if (!data.username) {
-      errors.username = 'Username is required';
+    if (!data.username.trim()) {
+      errors.username = "Username is required";
     }
-
-    if (!data.email) {
-      errors.email = 'Email is required';
+    if (!data.email.trim()) {
+      errors.email = "Email is required";
     } else if (!isValidEmail(data.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = "Invalid email format";
     }
-
-    if (!data.phonenumber) {
-      errors.phonenumber = 'Phone number is required';
+    if (!data.phonenumber.trim()) {
+      errors.phonenumber = "Phone number is required";
     } else if (!isValidPhoneNumber(data.phonenumber)) {
-      errors.phonenumber = 'Invalid phone number format';
+      errors.phonenumber = "Invalid phone number format";
     }
-
-    if (!data.password) {
-      errors.password = 'Password is required';
-    } else if (data.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters long';
+    if (!data.password.trim()) {
+      errors.password = "Password is required";
     }
-
     return errors;
   };
 
   const isValidEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email.trim());
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const isValidPhoneNumber = (phoneNumber) => {
-    const phoneNumberRegex = /^\d{10}$/;
-    return phoneNumberRegex.test(phoneNumber);
+  const isValidPhoneNumber = (phonenumber) => {
+    return /^\d{10}$/.test(phonenumber);
   };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
 
   return (
     <div className="signup-container">
       <h2>Signup</h2>
       <form onSubmit={handleSignup}>
         <label htmlFor="username">Username:</label>
-        <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required />
-        {errors.username && <span className="error-message">{errors.username}</span>}
-
-        <label htmlFor="email">Email:</label>
-        <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
-        {errors.email && <span className="error-message">{errors.email}</span>}
-
-        <label htmlFor="phonenumber">Phonenumber:</label>
         <input
           type="text"
+          id="username"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
+
+        <label htmlFor="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+
+        <label htmlFor="phonenumber">Phone Number:</label>
+        <input
+          type="tel"
           id="phonenumber"
           name="phonenumber"
           value={formData.phonenumber}
           onChange={handleChange}
           required
         />
-        {errors.phonenumber && <span className="error-message">{errors.phonenumber}</span>}
 
         <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        {errors.password && <span className="error-message">{errors.password}</span>}
+        <div className="password-input-wrapper">
+          <input
+            type={showPassword ? "text" : "password"}
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <span
+            onClick={togglePasswordVisibility}
+            className="password-toggle-icon"
+          >
+            <img
+              src={showPassword ? hideIcon : showIcon}
+              alt="Toggle password visibility"
+            />
+          </span>
+        </div>
 
         <button type="submit" disabled={loading}>
-          {loading ? 'Signing Up...' : 'Sign Up'}
+          {loading ? "Signing up..." : "Sign Up"}
         </button>
-      </form>
-
-      <div className="sign-in-with-google" onClick={handleSignupWithGoogle}>
-        <span>Continue with:  </span>
-        <FontAwesomeIcon icon={faGoogle} className="google-icon" />
-      </div>
-
-      {/* Signup result message */}
-      {signupResult && (
-        <div className={`message ${signupResult.type === 'success' ? 'success-message' : 'error-message'}`}>
-          <p>{signupResult.message}</p>
+        <div className="sign-in-with-google" onClick={handleSignupWithGoogle}>
+          <span>Sign in with Google</span>
+          <FontAwesomeIcon icon={faGoogle} className="google-icon" />
         </div>
-      )}
-
-      {/* Your existing login link */}
-      <p className="login-link">
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
+        <div className="login-link">
+          Already have an account? <Link to="/login"> Login</Link>
+        </div>
+      </form>
+      <ToastContainer />
     </div>
   );
 };

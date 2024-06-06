@@ -14,6 +14,8 @@ const multer = require("multer");
 const crypto = require("crypto");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
+const nodemailer = require("nodemailer");
+require("dotenv").config(); // Load environment variables from .env file
 
 // Multer storage configuration
 const storage = multer.diskStorage({
@@ -30,6 +32,54 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+// Email configuration
+
+// Email configuration
+// const transporter = nodemailer.createTransport({
+//   host: "smtp-relay.gmail.com",
+//   port: 587,
+//   secure: false,
+//   auth: {
+//     user: process.env.EMAIL_USER, // Use environment variable
+//     pass: process.env.EMAIL_PASS, // Use environment variable
+//   },
+// });
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.mailtrap.io",
+  port: 2525, // Make sure to use the correct port for Mailtrap
+  secure: false, // Set to true if your Mailtrap server requires SSL
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+router.post("/send-email", async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    const mailOptions = {
+      from: `"Support Team" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Support Request Received",
+      html: `
+            <p>Dear ${name},</p>
+            <p>Thank you for reaching out to us. We have received your support request and will get back to you shortly.</p>
+            <p>Best regards,</p>
+            <p>Support Team</p>
+        `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).send("Email sent successfully");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).send(`Error sending email: ${error.message}`);
+  }
+});
 
 router.post("/signup", async (req, res) => {
   try {
@@ -127,6 +177,140 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Error during login" });
+  }
+});
+
+
+router.post("/forgot-password", async (req, res) => {
+  console.log("Received forgot password request:", req.body); // Log incoming request body
+
+  const { email } = req.body;
+  if (!email) {
+    console.log("Email is required"); // Log error message
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.log("User not found for email:", email); // Log error message
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Generate a token
+    const token = crypto.randomBytes(20).toString("hex");
+
+    // Set token and expiration time (1 hour from now)
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+    await user.save();
+
+    // Send email with reset link
+    const resetUrl = `http://localhost:3000/reset-password/${token}`;
+    const mailOptions = {
+      from: `"Support Team" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "Password Reset Request",
+      html: `
+        <p>Dear ${user.username},</p>
+        <p>You requested a password reset. Please click the link below to reset your password:</p>
+        <a href="${resetUrl}">Reset Password</a>
+        <p>This link will expire in 1 hour.</p>
+        <p>Best regards,</p>
+        <p>Support Team</p>
+      `,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    // Log success message
+    console.log("Password reset link sent to:", user.email);
+
+    res.status(200).json({ message: "Password reset link sent to your email" });
+  } catch (error) {
+    console.error("Error processing forgot password request:", error);
+
+    // Log the error
+    console.error(error);
+
+    // Send generic error response to the client
+    res.status(500).json({ error: "Error processing forgot password request" });
+  }
+});
+
+router.post("/reset-password/:token", async (req, res) => {
+  console.log("Received reset password request:", req.params); // Log token from request parameters
+  console.log("Received reset password request body:", req.body); // Log incoming request body
+
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      console.log("Password reset token is invalid or has expired:", token); // Log error message
+      return res
+        .status(400)
+        .json({ error: "Password reset token is invalid or has expired" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password has been reset" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ error: "Error resetting password" });
+  }
+});
+
+
+// Update password route handler
+router.put("/users/:id/password", async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Compare current password with stored hashed password
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Incorrect current password" });
+    }
+
+    // Validate strength of the new password
+    if (newPassword.length < 8) {
+      return res.status(400).json({ error: "New password must be at least 8 characters long" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user's password
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "Error updating password" });
   }
 });
 

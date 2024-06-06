@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const path = require("path");
 const authRoutes = require("./routes/auth");
 const tasksRouter = require('./routes/taskRoute'); // Corrected file name
+// const updateExistingUsersWithNewFields = require('./updateUsers'); // Import the update function
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
@@ -57,6 +58,10 @@ async function startServer() {
   // Wait for MongoDB connection to open
   await new Promise((resolve) => db.once("open", resolve));
   console.log("Connected to MongoDB");
+
+// // Call the function to update existing users with new fields
+// await updateExistingUsersWithNewFields(); // Await here
+
 
   // Mount authentication routes
   app.use("/auth", authRoutes);

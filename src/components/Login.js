@@ -1,8 +1,14 @@
 
+
 import React, { useState, useEffect } from "react";
-import "./Login.css";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import "./Login.css";
+
+const showIcon = process.env.PUBLIC_URL + '/view.png';
+const hideIcon = process.env.PUBLIC_URL + '/hide.png';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,8 +16,8 @@ const Login = () => {
     password: "",
   });
   const [loginStep, setLoginStep] = useState(1);
-  const [loginResult, setLoginResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleEmailSubmit = async (e) => {
@@ -30,16 +36,10 @@ const Login = () => {
       if (response.data.exists) {
         setLoginStep(2);
       } else {
-        setLoginResult({
-          message: "Email does not exist. Please try again.",
-          type: "error",
-        });
+        toast.error("Email does not exist. Please try again."); // Show error toast
       }
     } catch (error) {
-      setLoginResult({
-        message: "Error checking email. Please try again.",
-        type: "error",
-      });
+      toast.error("Error checking email. Please try again."); // Show error toast
     } finally {
       setLoading(false);
     }
@@ -47,49 +47,37 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     try {
       setLoading(true);
-  
+
       const response = await axios.post(
         "http://localhost:5000/auth/login",
         formData
       );
-  
+
       if (response.status === 200) {
-        setLoginResult({ message: "Login successful", type: "success" });
-  
+        toast.success("Login successful"); // Show success toast
+
         const user = response.data.user;
-  
-        // Check if the user is an admin
+
         if (user.isAdmin) {
-          // Redirect to admin dashboard
           navigate(`/admin/dashboard/${user._id}`);
         } else {
-          // Redirect to user dashboard
           navigate(`/dashboard/${user._id}`);
         }
-  
-        // Store token in local storage
+
         const token = response.data.token;
         localStorage.setItem("token", token);
       } else {
-        setLoginResult({
-          message: "Unexpected error. Please try again.",
-          type: "error",
-        });
+        toast.error("Unexpected error. Please try again."); // Show error toast
       }
     } catch (error) {
-      // Handle errors
-      setLoginResult({
-        message: "Error logging in. Please try again.",
-        type: "error",
-      });
+      toast.error("Error logging in. Please try again."); // Show error toast
     } finally {
       setLoading(false);
     }
-  
-    // Reset form data and login step
+
     setFormData({
       email: "",
       password: "",
@@ -105,19 +93,19 @@ const Login = () => {
     }));
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLoginResult(null);
+      toast.dismiss(); // Dismiss any active toast
     }, 5000);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [loginResult]);
-
-  const handleClose = () => {
-    setLoginResult(null);
-  };
+  }, []);
 
   return (
     <div className="login-container">
@@ -138,31 +126,31 @@ const Login = () => {
       ) : (
         <form onSubmit={handleLogin}>
           <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="password-input">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <img
+              src={showPassword ? hideIcon : showIcon}
+              alt="Toggle password visibility"
+              className="password-toggle"
+              onClick={toggleShowPassword}
+            />
+          </div>
           <button type="submit" disabled={loading}>
             {loading ? "Logging ..." : "Log In"}
           </button>
         </form>
       )}
-      {loginResult && (
-        <div
-          className={`message ${
-            loginResult.type === "success" ? "success" : "error"
-          }`}
-        >
-          <p3>{loginResult.message}</p3>{" "}
-          <button1 className="close-button" onClick={handleClose}>
-            &#x2716;
-          </button1>
-        </div>
-      )}
+      <ToastContainer /> {/* Place ToastContainer component */}
+      <p className="forgot-password-link">
+        Forgot your password? <Link to="/forgot-password">Click here</Link>
+      </p>
       <p className="signup-link">
         Don't have an account? <Link to="/signup">Sign up</Link>
       </p>
@@ -171,3 +159,4 @@ const Login = () => {
 };
 
 export default Login;
+

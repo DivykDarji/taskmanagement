@@ -1,319 +1,14 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import { useParams } from "react-router-dom";
-// import "./ProfilePage.css"; // Import CSS file for styling
-// import { useNavigate } from "react-router-dom";
 
-// const ProfilePage = () => {
-//   const { id } = useParams();
-//   const [user, setUser] = useState({
-//     username: "",
-//     email: "",
-//     phonenumber: "",
-//     profileImage: "",
-//   });
-//   const [newProfileImage, setNewProfileImage] = useState(null);
-//   const [imagePreview, setImagePreview] = useState(null); // New state for image preview
-//   const [successMessage, setSuccessMessage] = useState("");
-//   const [errorMessage, setErrorMessage] = useState("");
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     // Fetch user data from backend based on the user ID
-//     axios
-//       .get(`http://localhost:5000/auth/users/${id}`)
-//       .then((response) => {
-//         setUser(response.data.user);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching user data:", error);
-//       });
-//   }, [id]);
-
-//   useEffect(() => {
-//     // Update image preview when a new profile image is selected
-//     if (newProfileImage) {
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setImagePreview(reader.result);
-//       };
-//       reader.readAsDataURL(newProfileImage);
-//     } else {
-//       setImagePreview(null);
-//     }
-//   }, [newProfileImage]);
-
-//   const handleChange = (e) => {
-//     setUser({ ...user, [e.target.name]: e.target.value });
-//   };
-
-//   const handleImageChange = (e) => {
-//     const file = e.target.files[0];
-//     setNewProfileImage(file);
-//   };
-
-//   const handleSubmit = async () => {
-//     const formData = new FormData();
-//     formData.append("username", user.username);
-//     formData.append("email", user.email);
-//     formData.append("phonenumber", user.phonenumber);
-//     if (newProfileImage) {
-//       formData.append("profileImage", newProfileImage);
-//     }
-
-//     try {
-//       await axios.put(`http://localhost:5000/auth/users/${id}`, formData, {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       });
-//       setSuccessMessage("User data updated successfully");
-//       setErrorMessage("");
-
-//       // Delay navigation to the dashboard to ensure success message is displayed
-//       setTimeout(() => {
-//         navigate(`/dashboard/${user._id}`);
-//       }, 1000); // 1000 milliseconds delay
-//     } catch (error) {
-//       setSuccessMessage("");
-//       setErrorMessage("Error updating user data");
-//       console.error("Error updating user data:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="profile-container">
-//       <h2>Profile Page</h2>
-//       {successMessage && (
-//         <div className="success-message">{successMessage}</div>
-//       )}
-//       {errorMessage && <div className="error-message">{errorMessage}</div>}
-//       <div className="form-group">
-//         <label>Username:</label>
-//         <input
-//           type="text"
-//           name="username"
-//           value={user.username}
-//           onChange={handleChange}
-//         />
-//       </div>
-//       <div className="form-group">
-//         <label>Email:</label>
-//         <input
-//           type="email"
-//           name="email"
-//           value={user.email}
-//           onChange={handleChange}
-//         />
-//       </div>
-//       <div className="form-group">
-//         <label>Phone Number:</label>
-//         <input
-//           type="text"
-//           name="phonenumber"
-//           value={user.phonenumber}
-//           onChange={handleChange}
-//         />
-//       </div>
-//       <div className="form-group">
-//         <label>Profile Image:</label>
-//         {imagePreview && (
-//           <img src={imagePreview} alt="Profile" className="profile-image" />
-//         )}
-//         {!imagePreview && user.profileImage && (
-//           <img
-//             src={`http://localhost:5000/uploads/profileImages/${user.profileImage}`}
-//             alt="Profile"
-//             className="profile-image"
-//           />
-//         )}
-//         <div class="custom-file-input-container">
-//           <label for="fileInput" class="custom-file-label">
-//             <span class="custom-file-label-text">Choose File</span>
-//           </label>
-//           <input
-//             id="fileInput"
-//             class="custom-file-input"
-//             type="file"
-//             accept="image/*"
-//             onChange={handleImageChange}
-//           />
-//         </div>
-//       </div>
-//       <button className="submit-button" onClick={handleSubmit}>
-//         Save Changes
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ProfilePage;
-
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import { useParams } from "react-router-dom";
-// import "./ProfilePage.css"; // Import CSS file for styling
-// import { useNavigate } from "react-router-dom";
-
-// const ProfilePage = () => {
-//   const { id } = useParams();
-//   const [user, setUser] = useState({
-//     username: "",
-//     email: "",
-//     phonenumber: "",
-//     profileImage: "",
-//   });
-//   const [newProfileImage, setNewProfileImage] = useState(null);
-//   const [imagePreview, setImagePreview] = useState(null); // New state for image preview
-//   const [successMessage, setSuccessMessage] = useState("");
-//   const [errorMessage, setErrorMessage] = useState("");
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     // Fetch user data from backend based on the user ID
-//     axios
-//       .get(`http://localhost:5000/auth/users/${id}`)
-//       .then((response) => {
-//         setUser(response.data.user);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching user data:", error);
-//       });
-//   }, [id]);
-
-//   useEffect(() => {
-//     // Update image preview when a new profile image is selected
-//     if (newProfileImage) {
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setImagePreview(reader.result);
-//       };
-//       reader.readAsDataURL(newProfileImage);
-//     } else {
-//       setImagePreview(null);
-//     }
-//   }, [newProfileImage]);
-
-//   const handleChange = (e) => {
-//     setUser({ ...user, [e.target.name]: e.target.value });
-//   };
-
-//   const handleImageChange = (e) => {
-//     const file = e.target.files[0];
-//     setNewProfileImage(file);
-//   };
-
-//   const handleSubmit = async () => {
-//     const formData = new FormData();
-//     formData.append("username", user.username);
-//     formData.append("email", user.email);
-//     formData.append("phonenumber", user.phonenumber);
-//     if (newProfileImage) {
-//       formData.append("profileImage", newProfileImage);
-//     }
-
-//     try {
-//       await axios.put(`http://localhost:5000/auth/users/${id}`, formData, {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//       });
-//       setSuccessMessage("User data updated successfully");
-//       setErrorMessage("");
-
-//       // Delay navigation to the dashboard to ensure success message is displayed
-//       setTimeout(() => {
-//         navigate(`/dashboard/${user._id}`);
-//       }, 1000); // 1000 milliseconds delay
-//     } catch (error) {
-//       setSuccessMessage("");
-//       setErrorMessage("Error updating user data");
-//       console.error("Error updating user data:", error);
-//     }
-//   };
-
-//   const handleGoToDashboard = () => {
-//     navigate(`/dashboard/${user._id}`);
-//   };
-
-//   return (
-//     <div className="profile-container">
-//       <h2>Profile Page</h2>
-//       {successMessage && (
-//         <div className="success-message">{successMessage}</div>
-//       )}
-//       {errorMessage && <div className="error-message">{errorMessage}</div>}
-//       <div className="form-group">
-//         <label>Username:</label>
-//         <input
-//           type="text"
-//           name="username"
-//           value={user.username}
-//           onChange={handleChange}
-//         />
-//       </div>
-//       <div className="form-group">
-//         <label>Email:</label>
-//         <input
-//           type="email"
-//           name="email"
-//           value={user.email}
-//           onChange={handleChange}
-//         />
-//       </div>
-//       <div className="form-group">
-//         <label>Phone Number:</label>
-//         <input
-//           type="text"
-//           name="phonenumber"
-//           value={user.phonenumber}
-//           onChange={handleChange}
-//         />
-//       </div>
-//       <div className="form-group">
-//         <label>Profile Image:</label>
-//         {imagePreview && (
-//           <img src={imagePreview} alt="Profile" className="profile-image" />
-//         )}
-//         {!imagePreview && user.profileImage && (
-//           <img
-//             src={`http://localhost:5000/uploads/profileImages/${user.profileImage}`}
-//             alt="Profile"
-//             className="profile-image"
-//           />
-//         )}
-//         <div className="custom-file-input-container">
-//           <label for="fileInput" className="custom-file-label">
-//             <span className="custom-file-label-text">Choose File</span>
-//           </label>
-//           <input
-//             id="fileInput"
-//             className="custom-file-input"
-//             type="file"
-//             accept="image/*"
-//             onChange={handleImageChange}
-//           />
-//         </div>
-//       </div>
-//       <div className="button-group">
-//         <button className="submit-button" onClick={handleSubmit}>
-//           Save Changes
-//         </button>
-//         <button className="dashboard-button" onClick={handleGoToDashboard}>
-//           Go to Dashboard
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProfilePage;
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import "./ProfilePage.css"; // Import CSS file for styling
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import PasswordChangeForm from "./PasswordChangeForm"; // Import the PasswordChangeForm component
+import { Tabs, Tab, Box, Typography } from "@mui/material";
 
 const ProfilePage = () => {
   const { id } = useParams();
@@ -325,9 +20,9 @@ const ProfilePage = () => {
   });
   const [newProfileImage, setNewProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null); // New state for image preview
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("profile");
+  
 
   useEffect(() => {
     // Fetch user data from backend based on the user ID
@@ -378,16 +73,12 @@ const ProfilePage = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setSuccessMessage("User data updated successfully");
-      setErrorMessage("");
-
-      // Delay navigation to the dashboard to ensure success message is displayed
+      toast.success("User data updated successfully"); // Success Toastify message
       setTimeout(() => {
         navigate(`/dashboard/${user._id}`);
       }, 1000); // 1000 milliseconds delay
     } catch (error) {
-      setSuccessMessage("");
-      setErrorMessage("Error updating user data");
+      toast.error("Error updating user data"); // Error Toastify message
       console.error("Error updating user data:", error);
     }
   };
@@ -396,8 +87,12 @@ const ProfilePage = () => {
     navigate(`/dashboard/${user._id}`);
   };
 
+
+  
+  
   return (
     <div className="profile-page-container">
+      <ToastContainer />
       <img
         src="/turn-left.gif" // Path to your gif
         alt="Go to Dashboard"
@@ -405,69 +100,116 @@ const ProfilePage = () => {
         onClick={handleGoToDashboard}
       />
       <div className="profile-container">
-        <h2>Profile Page</h2>
-        {successMessage && (
-          <div className="success-message">{successMessage}</div>
-        )}
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
-        <div className="form-group">
-          <label>Username:</label>
-          <input
-            type="text"
-            name="username"
-            value={user.username}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Phone Number:</label>
-          <input
-            type="text"
-            name="phonenumber"
-            value={user.phonenumber}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label>Profile Image:</label>
-          {imagePreview && (
-            <img src={imagePreview} alt="Profile" className="profile-image" />
-          )}
-          {!imagePreview && user.profileImage && (
-            <img
-              src={`http://localhost:5000/uploads/profileImages/${user.profileImage}`}
-              alt="Profile"
-              className="profile-image"
-            />
-          )}
-          <div className="custom-file-input-container">
-            <label for="fileInput" className="custom-file-label">
-              <span className="custom-file-label-text">Choose File</span>
-            </label>
+        <Tabs
+          value={activeTab}
+          onChange={(event, newValue) => setActiveTab(newValue)}
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            background: "linear-gradient(to right, #ffffff, #f8f8f8)", // Gradient background
+            "& .MuiTabs-indicator": {
+              backgroundColor: "#4caf50", // Change to green color
+            },
+            "& .MuiTabs-flexContainer": {
+              "& .MuiTab-root": {
+                position: "relative",
+                cursor: "pointer",
+                padding: "10px 20px",
+                fontSize: "16px",
+                borderBottom: "2px solid transparent",
+                transition: "all 0.3s ease", // Smooth transition on hover
+                "&:hover": {
+                  backgroundColor: "#f0f0f0", // Background color on hover
+                },
+                "&.Mui-selected": {
+                  color: "#4caf50",
+                  fontWeight: "bold", // Increase font weight for active tab
+                },
+                "& .MuiTab-labelIcon": {
+                  marginRight: "5px", // Add space between icon and label
+                },
+              },
+            },
+          }}
+        >
+          <Tab label="Profile Page" value="profile" />
+          <Tab label="Change Password" value="changePassword" />
+        </Tabs>
+        <TabPanel value="profile" activeTab={activeTab}>
+          <div className="form-group">
+            <label>Username:</label>
             <input
-              id="fileInput"
-              className="custom-file-input"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
+              type="text"
+              name="username"
+              value={user.username}
+              onChange={handleChange}
             />
           </div>
-        </div>
-        <div className="button-group">
-          <button className="submit-button" onClick={handleSubmit}>
-            Save Changes
-          </button>
-        </div>
+          <div className="form-group">
+            <label>Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Phone Number:</label>
+            <input
+              type="text"
+              name="phonenumber"
+              value={user.phonenumber}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Profile Image:</label>
+            {imagePreview && (
+              <img src={imagePreview} alt="Profile" className="profile-image" />
+            )}
+            {!imagePreview && user.profileImage && (
+              <img
+                src={`http://localhost:5000/uploads/profileImages/${user.profileImage}`}
+                alt="Profile"
+                className="profile-image"
+              />
+            )}
+            <div className="custom-file-input-container">
+              <label htmlFor="fileInput" className="custom-file-label">
+                <span className="custom-file-label-text">Choose File</span>
+              </label>
+              <input
+                id="fileInput"
+                className="custom-file-input"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </div>
+          </div>
+          <div className="button-group">
+            <button className="submit-button" onClick={handleSubmit}>
+              Save Changes
+            </button>
+          </div>
+        </TabPanel>
+        <TabPanel value="changePassword" activeTab={activeTab}>
+          <PasswordChangeForm userId={id} />
+        </TabPanel>
       </div>
+    </div>
+  );
+};
+
+const TabPanel = ({ children, value, activeTab }) => {
+  return (
+    <div role="tabpanel" hidden={value !== activeTab}>
+      {value === activeTab && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
     </div>
   );
 };

@@ -1,18 +1,18 @@
 .signup-container {
   max-width: 400px;
-  margin: 50px auto; /* Centering the signup container vertically */
+  margin: 50px auto; 
   padding: 20px;
-  position: relative; /* Ensure the position is relative for z-index to work */
-  z-index: 10; /* Set a higher value than the z-index of .box */
-  background-color: #fff; /* Background color */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  position: relative;
+  z-index: 10;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .signup-container h2 {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #000; /* Text color */
+  color: #000;
 }
 
 .signup-container form {
@@ -24,15 +24,34 @@
 .signup-container label {
   margin-bottom: 8px;
   font-size: 16px;
-  color: #000; /* Text color */
+  color: #000;
 }
 
 .signup-container input {
-  padding: 10px;
+  padding: 10px 40px 10px 10px; 
   margin-bottom: 16px;
   width: 100%;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.password-toggle-icon img {
+  width: 20px;
+  height: auto;
 }
 
 .signup-container button {
@@ -43,13 +62,14 @@
   border: none;
   border-radius: 4px;
   font-size: 16px;
-  transition: background-color 0.3s ease, color 0.3s ease; /* Add a smooth transition */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 100%;
 }
 
 .signup-container button:hover {
-  background-color: #454442; /* Change to your desired hover background color */
-  color: #fff; /* Change to your desired hover text color */
+  background-color: #454442;
 }
+
 .sign-in-with-google {
   display: flex;
   align-items: center;
@@ -63,50 +83,6 @@
   cursor: pointer;
 }
 
-.message {
-  padding: 8px;
-  margin-top: 10px;
-  border-radius: 4px;
-  width: fit-content;
-  position: absolute;
-  top: 0;
-  right: -50%;
-  transform: translateX(50%);
-  text-align: center;
-  font-size: 16px;
-  color: #fff; /* Text color */
-}
-
-.message.success-message {
-  background-color: #4caf50; /* Green background for success message */
-}
-
-.message.error-message {
-  background-color: #f44336; /* Red background for error message */
-}
-
-.signup-container .error-message {
-  padding: 8px;
-  margin-top: 10px;
-  border-radius: 4px;
-  width: fit-content;
-  position: absolute;
-  top: 0;
-  right: -50%;
-  transform: translateX(50%);
-  text-align: center;
-  font-size: 16px;
-  color: #fff; /* Text color */
-}
-
-.signup-container .error-message.success-message {
-  background-color: #4caf50; /* Green background for success message */
-}
-
-.signup-container .error-message.error-message {
-  background-color: #f44336; /* Red background for error message */
-}
-
 .login-link {
   display: block;
   text-align: center;
@@ -117,10 +93,29 @@
   color: #007bff;
   text-decoration: none;
   font-weight: bold;
-  border-bottom: 2px solid transparent; /* Add a transparent underline */
-  transition: border-color 0.3s ease; /* Smooth transition for the underline color */
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
 }
 
 .login-link a:hover {
-  border-color: #007bff; /* Change the underline color on hover */
+  border-color: #007bff;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.error-message::before {
+  content: "⚠ ";
+}
+
+/* Responsive Styles */
+
+@media screen and (max-width: 500px) {
+  .signup-container {
+    max-width: 90%;
+    margin: 50px auto;
+  }
 }

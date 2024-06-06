@@ -1,26 +1,23 @@
-const User = require("./models/User"); // Import the User model
+const User = require("./models/User");
 
-async function updateExistingUsersWithProfileImage() {
-    try {
-        // Find all existing users
-        const users = await User.find({});
+async function updateExistingUsersWithNewFields() {
+  try {
+    // Update all documents where resetPasswordToken is null or undefined
+    await User.updateMany(
+      { resetPasswordToken: { $in: [null, undefined] } },
+      { $set: { resetPasswordToken: null } }
+    );
 
-        // Iterate over each user and update properties
-        for (const user of users) {
-            // Add profileImage field if it doesn't already exist
-            if (!user.hasOwnProperty('profileImage')) {
-                user.profileImage = ''; // Set default value to an empty string
-                await user.save(); // Save the updated user
-            }
-        }
+    // Update all documents where resetPasswordExpires is null or undefined
+    await User.updateMany(
+      { resetPasswordExpires: { $in: [null, undefined] } },
+      { $set: { resetPasswordExpires: null } }
+    );
 
-        console.log("Existing users updated successfully with profileImage field");
-    } catch (error) {
-        console.error("Error updating existing users with profileImage field:", error);
-    }
+    console.log("Existing users updated successfully with new fields");
+  } catch (error) {
+    console.error("Error updating existing users with new fields:", error);
+  }
 }
 
-module.exports = updateExistingUsersWithProfileImage;
-// Call updateExistingUsers asynchronously
-  // await updateExistingUsersWithProfileImage();
-  
+module.exports = updateExistingUsersWithNewFields;
