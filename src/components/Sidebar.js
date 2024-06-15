@@ -1,51 +1,63 @@
-// // Sidebar.js
-// import React from "react";
 
-// const Sidebar = ({ isOpen }) => {
-//   return (
-//     <div className={`sidebar ${isOpen ? "open" : ""}`}>
-//       <div className="sidebar-header">
-//         {/* No sidebar icon here */}
-//         <h2 className="sidebar-title">Menu</h2>
-//       </div>
-//       <div className="sidebar-items">
-//         <div className="sidebar-item">Dashboard</div>
-//         <div className="sidebar-item">Analytics</div>
-//         <div className="sidebar-item">Teams</div>
-//         <div className="sidebar-item">Documents</div>
-//         <div className="sidebar-item">Settings</div>
-//       </div>
-//       <div className="workspace">
-//         <span>Workspace</span>
-//         <select>
-//           <option>Tino Digital Agency</option>
-//         </select>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Sidebar;
-// Sidebar.js
 import React from "react";
-import { FaHome, FaChartBar, FaUsers, FaFileAlt, FaCog } from 'react-icons/fa';
+import { Link, useNavigate } from "react-router-dom";
+import { FaHome, FaUsers, FaFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
+import "./Sidebar.css";
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, toggleSidebar, isAdmin, userId }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userID"); // Remove userID as well if needed
+    navigate("/login");
+  };
+
   return (
     <div className={`sidebar ${isOpen ? "open" : ""}`}>
       <div className="sidebar-header">
         <h2 className="sidebar-title">Menu</h2>
       </div>
       <div className="sidebar-items">
-        <div className="sidebar-item"><FaHome /> Dashboard</div>
-        <div className="sidebar-item"><FaChartBar /> Analytics</div>
-        <div className="sidebar-item"><FaUsers /> Teams</div>
-        <div className="sidebar-item"><FaFileAlt /> Documents</div>
-        <div className="sidebar-item"><FaCog /> Settings</div>
+        {/* Dashboard link */}
+        <Link
+          to={isAdmin ? `/admin/dashboard/${userId}` : `/dashboard/${userId}`}
+          className="sidebar-item"
+          onClick={toggleSidebar}
+        >
+          <FaHome /> Dashboard
+        </Link>
+
+        {/* User Management link */}
+        {isAdmin && (
+          <Link to="/admin/user-management" className="sidebar-item" onClick={toggleSidebar}>
+            <FaUsers /> User Management
+          </Link>
+        )}
+        {!isAdmin && (
+          <Link to="/user-management" className="sidebar-item" onClick={toggleSidebar}>
+            <FaUsers /> User Management
+          </Link>
+        )}
+
+        {/* Tasks link */}
+        <Link to="/tasks" className="sidebar-item" onClick={toggleSidebar}>
+          <FaFileAlt /> Tasks
+        </Link>
+
+        {/* Settings link */}
+        <Link to="/settings" className="sidebar-item" onClick={toggleSidebar}>
+          <FaCog /> Settings
+        </Link>
+      </div>
+      <div className="sidebar-footer">
+        {/* Logout button */}
+        <button className="logout-button" onClick={handleLogout}>
+          <FaSignOutAlt /> Logout
+        </button>
       </div>
     </div>
   );
 };
 
 export default Sidebar;
-

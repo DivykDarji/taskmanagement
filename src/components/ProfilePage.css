@@ -222,14 +222,27 @@ input[type="file"] {
 @media screen and (max-width: 768px) {
   /* Adjust styles for smaller screens */
   .profile-container {
-      max-width: 90%; /* Adjust container width for smaller screens */
-      border-radius: 0; /* Remove border radius on smaller screens if necessary */
+    max-width: 90%; /* Adjust container width for smaller screens */
+    border-radius: 0; /* Remove border radius on smaller screens if necessary */
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+
+  .dashboard-button {
+    top: 10px; /* Adjust position for smaller screens */
+    left: 10px; /* Adjust position for smaller screens */
+    width: 40px; /* Adjust width for smaller screens */
   }
 }
 
 @media screen and (max-width: 480px) {
   /* Further adjustments for extra small screens */
   .profile-container {
-      padding: 10px; /* Adjust padding for extra small screens */
+    padding: 10px; /* Adjust padding for extra small screens */
+  }
+
+  .dashboard-button {
+    top: 10px; /* Adjust position for extra small screens */
+    left: 10px; /* Adjust position for extra small screens */
+    width: 30px; /* Adjust width for extra small screens */
   }
 }

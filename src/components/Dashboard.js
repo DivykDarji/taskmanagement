@@ -32,6 +32,7 @@ const Dashboard = () => {
   // eslint-disable-next-line
   const [selectedDate, setSelectedDate] = useState(new Date());
   const tasksPerPage = 5;
+  
 
   // Define fetchTasks function outside useEffect
   const fetchTasks = async () => {
@@ -51,13 +52,26 @@ const Dashboard = () => {
     }
   };
   useEffect(() => {
+
+    const storedToken = localStorage.getItem("token");
+    
+
+    if (!storedToken) {
+      // If token or userID is not available in localStorage, navigate to login page
+      navigate("/login");
+    }
+
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/auth/users/${id}`
+          `http://localhost:5000/auth/users/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${storedToken}`,
+            },
+          }
         );
         if (response.data && response.data.user) {
-          // Update userData state with the fetched user data including the profileImage
           setUserData(response.data.user);
         } else {
           console.error("No user data found in the API response");
@@ -72,7 +86,12 @@ const Dashboard = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/tasks/user/${id}`
+          `http://localhost:5000/tasks/user/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${storedToken}`,
+            },
+          }
         );
         if (Array.isArray(response.data)) {
           setTasks(response.data);
@@ -88,7 +107,7 @@ const Dashboard = () => {
 
     fetchUserData();
     fetchTasks();
-  }, [id]);
+  }, [id, navigate]);
 
   // Add another useEffect to update tasksForToday whenever tasks state changes
   useEffect(() => {
@@ -239,6 +258,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userID");
     navigate("/login");
   };
 
@@ -292,7 +312,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <FaBars className="sidebar-toggle-icon" onClick={toggleSidebar} />
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} userId={id} />
       <div className={`content ${isOpen ? "content-shifted" : ""}`}>
         <div className="content-header">
           <div className="profile">
