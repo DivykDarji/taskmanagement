@@ -1,14 +1,16 @@
-
-
 import React from 'react';
-import UserManagement from './src/UserManagement';
-import './AdminDashboard.css'; // Import the CSS file
+import UserManagement from './components/UserManagement'; // Adjust the import path if necessary
+import Sidebar from './Sidebar'; // Adjust the import path if necessary
+import './AdminDashboard.css';
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ isOpen, toggleSidebar, isAdmin, userId }) => {
   return (
-    <div className="admin-dashboard-container"> {/* Apply the container class */}
-      <div className="user-management-section"> {/* Apply the user management section class */}
-        <UserManagement />
+    <div className="admin-dashboard-container">
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} isAdmin={isAdmin} userId={userId} />
+      <div className={`content ${isOpen ? "content-shifted" : ""}`}>
+        <div className="user-management-section">
+          <UserManagement isAdmin={isAdmin} userId={userId} />
+        </div>
       </div>
     </div>
   );

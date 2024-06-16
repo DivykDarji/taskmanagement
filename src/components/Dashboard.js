@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Dashboard.css";
-import Sidebar from "./Sidebar";
+// import Sidebar from "./Sidebar";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import { FaBars, FaAngleDown } from "react-icons/fa";
+import {  FaAngleDown } from "react-icons/fa";
 import AddTaskPage from "./AddTaskPage";
 import "./dashboard-calendar.css";
 import { Tabs, Tab, Box, Typography, Select, MenuItem } from "@mui/material";
@@ -16,7 +16,7 @@ import { Tabs, Tab, Box, Typography, Select, MenuItem } from "@mui/material";
 const Dashboard = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Recently");
   const [userData, setUserData] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -252,9 +252,9 @@ const Dashboard = () => {
     }, 3000);
   };
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  // const toggleSidebar = () => {
+  //   setIsOpen(!isOpen);
+  // };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -311,8 +311,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <FaBars className="sidebar-toggle-icon" onClick={toggleSidebar} />
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} userId={id} />
       <div className={`content ${isOpen ? "content-shifted" : ""}`}>
         <div className="content-header">
           <div className="profile">

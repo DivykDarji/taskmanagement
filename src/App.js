@@ -35,6 +35,7 @@ function App() {
           <Route path="/thankyou-signup/:id" element={<ThankYouSignup />} />
           <Route path="/home" element={<Banner />} />
           <Route path="/admin/dashboard/:userId" element={<UserManagement />} /> {/* Updated route for UserManagement */}
+          {/* <Route path="/user-management" element={<UserManagement />} /> */}
           <Route path="/edit-user/:id" element={<UserEdit />} />
           <Route path={`/add-task/:id`} element={<AddTaskPage />} />
           <Route path="/profile/:id" element={<ProfilePage />} /> 
