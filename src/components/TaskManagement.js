@@ -1,15 +1,14 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import "./UserManagement.css";
-import { Link, useNavigate } from "react-router-dom";
+import "./TaskManagement.css";
 import { FaAngleDown, FaBars } from "react-icons/fa";
-import Sidebar from "./Sidebar"; // Adjust the import path if necessary
+import Sidebar from "./Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const searchIconUrl = "/search.png";
 
-const UserManagement = ({ isAdmin, userId }) => {
-  const [users, setUsers] = useState([]);
+const TaskManagement = ({ isAdmin, userId }) => {
+  const [tasks, setTasks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,57 +21,46 @@ const UserManagement = ({ isAdmin, userId }) => {
     const query = event.target.value;
     setSearchQuery(query);
     setCurrentPage(1);
-    fetchUsers(query);
+    fetchTasks(query);
   };
 
-  const fetchUsers = useCallback(
-    async (searchQuery) => {
-      try {
-        const response = await axios.get(`http://localhost:5000/auth/users`, {
-          params: {
-            page: currentPage,
-            search: searchQuery,
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        if (response.data.users.length === 1) {
-          setUsers([response.data.users[0]]);
-          setTotalPages(1);
-        } else {
-          setUsers(response.data.users);
-          setTotalPages(response.data.totalPages);
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    },
-    [currentPage]
-  );
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-
-    if (!storedToken) {
-      navigate("/login");
-      return;
-    }
-
-    fetchUsers();
-  }, [fetchUsers, navigate]);
-
-  const handleDeleteUser = async (userId) => {
+  const fetchTasks = useCallback(async (searchQuery) => {
     try {
-      await axios.delete(`http://localhost:5000/auth/users/${userId}`, {
+      const response = await axios.get(`http://localhost:5000/tasks`, {
+        params: {
+          page: currentPage,
+          search: searchQuery,
+        },
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setUsers(users.filter((user) => user._id !== userId));
+      setTasks(response.data.tasks);
+      setTotalPages(response.data.pagination.totalPages);
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error("Error fetching tasks:", error);
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      navigate("/login");
+      return;
+    }
+    fetchTasks();
+  }, [fetchTasks, navigate]);
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await axios.delete(`http://localhost:5000/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setTasks(tasks.filter((task) => task._id !== taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
     }
   };
 
@@ -102,7 +90,7 @@ const UserManagement = ({ isAdmin, userId }) => {
   };
 
   return (
-    <div className="user-management-container">
+    <div className="task-management-container">
       <FaBars className="sidebar-toggle-icon" onClick={toggleSidebar} />
       <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} isAdmin={isAdmin} userId={userId} />
       <div className={`content ${isOpen ? "content-shifted" : ""}`}>
@@ -129,12 +117,12 @@ const UserManagement = ({ isAdmin, userId }) => {
             )}
           </div>
         </div>
-        <h1>User Management</h1>
+        <h1>Task Management</h1>
         <div className={`search-section ${showSearch ? "show-search" : ""}`}>
           <div className="search-container">
             <input
               type="text"
-              placeholder="Search by username or email address..."
+              placeholder="Search tasks..."
               value={searchQuery}
               onChange={handleSearch}
               className="search-input"
@@ -148,22 +136,19 @@ const UserManagement = ({ isAdmin, userId }) => {
           </div>
         </div>
         <div className="section">
-          <h2>Users</h2>
-          <div className="user-list">
-            {users.map((user) => (
-              <div className="user-card" key={user._id}>
-                <h3>{user.username}</h3>
-                <p>Email: {user.email}</p>
-                <p>Phone Number: {user.phonenumber}</p>
+          <h2>Tasks</h2>
+          <div className="task-list">
+            {tasks.map((task) => (
+              <div className="task-card" key={task._id}>
+                <h3>{task.title}</h3>
+                <p>Description: {task.description}</p>
+                <p>Due Date: {task.dueDateTime}</p>
                 <div className="button-container">
-                  <button className="button edit-button">
-                    <Link to={`/edit-user/${user._id}`}>Edit</Link>
-                  </button>
                   <button
                     className="button delete-button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteUser(user._id);
+                      handleDeleteTask(task._id);
                     }}
                   >
                     Delete
@@ -189,5 +174,4 @@ const UserManagement = ({ isAdmin, userId }) => {
   );
 };
 
-export default UserManagement;
-
+export default TaskManagement;

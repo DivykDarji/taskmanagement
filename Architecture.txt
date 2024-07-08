@@ -12,7 +12,11 @@ divy-portfolio-website/
 |   |-- index.html
 |-- src/
       |-- Components/
-                   |--Banner.css
+                   |--AddTask.css
+                   |--AddTaskModal.js
+                   |--AddTaskPage.css
+                   |--AdminDashboard.js
+                   |--AdminDashboard.css
                    |--Banner.js
                    |--Box.js
                    |--Contact.css
@@ -34,6 +38,8 @@ divy-portfolio-website/
                    |--UserEdit.js
                    |--UserManagement.css
                    |--UserManagement.js
+                   |--TaskManagement.css
+                   |--TaskManagement.js
                    |--UserProfile.js
        |-- controllers/
                    |--loginControllers.js

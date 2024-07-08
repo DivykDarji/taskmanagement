@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const mongoose = require("mongoose");
 const jwtUtils = require("./jwtUtils");
-const authMiddleware = require("./authMiddleware");
+// const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const firebaseApp = require("../src/firebaseConfig");
 const { getAuth } = require("firebase/auth");
@@ -346,6 +346,16 @@ router.post("/check-email", async (req, res) => {
 });
 
 // Import the User model
+// Get user count
+router.get('/count', async (req, res) => {
+  try {
+    const userCount = await User.countDocuments();
+    res.json({ userCount });
+  } catch (error) {
+    console.error('Error fetching user count:', error);
+    res.status(500).json({ message: 'Failed to fetch user count', error: error.message });
+  }
+});
 
 // Fetch all users without sensitive information
 router.get("/users", async (req, res) => {
@@ -475,6 +485,8 @@ router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
   }
 });
 
+
+
 router.delete("/users/:id", async (req, res) => {
   try {
     const userId = req.params.id;
@@ -513,14 +525,14 @@ router.use(
 //   res.json({ message: "Admin route accessed successfully" });
 // });
 // Example protected route
-router.get("/protected-route", authMiddleware.authenticateToken, (req, res) => {
-  // If the execution reaches here, it means the token is valid
-  // You can access the user object from req.user
-  res.json({
-    message: "You have access to this protected route",
-    user: req.user,
-  });
-});
+// router.get("/protected-route", authMiddleware.authenticateToken, (req, res) => {
+//   // If the execution reaches here, it means the token is valid
+//   // You can access the user object from req.user
+//   res.json({
+//     message: "You have access to this protected route",
+//     user: req.user,
+//   });
+// });
 
 module.exports = router;
 

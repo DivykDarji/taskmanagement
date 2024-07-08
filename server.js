@@ -7,6 +7,9 @@ const path = require("path");
 const authRoutes = require("./routes/auth");
 const tasksRouter = require('./routes/taskRoute'); // Corrected file name
 // const updateExistingUsersWithNewFields = require('./updateUsers'); // Import the update function
+const authMiddleware = require('./src/middlewares/authMiddleware'); // Assuming this middleware is in the correct path
+const isAdmin = require('./src/middlewares/isAdminMiddleware'); // Assuming this middleware is in the correct path
+
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
@@ -15,6 +18,7 @@ admin.initializeApp({
 
 require("dotenv").config(); // Load environment variables from a .env file if present
 const cors = require("cors");
+
 
 const app = express();
 const port = process.env.PORT || 5000; // Use the provided PORT or default to 5000
@@ -68,6 +72,12 @@ async function startServer() {
 
   // Mount task routes
   app.use('/tasks', tasksRouter);
+
+  // Example protected route for admins only
+app.post('/admin', authMiddleware.authenticateToken, isAdmin, (req, res) => {
+  // If the execution reaches here, it means the user is an admin
+  res.json({ message: 'Admin route accessed successfully' });
+});
 
   app.use("/uploads/profileimages", express.static(path.join(__dirname, "uploads", "profileimages")));
 

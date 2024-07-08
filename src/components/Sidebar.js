@@ -1,16 +1,21 @@
-
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaHome, FaUsers, FaFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaHome, FaUsers, FaFileAlt, FaCog, FaSignOutAlt, FaBars } from "react-icons/fa";
 import "./Sidebar.css";
+import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ isOpen, toggleSidebar, isAdmin, userId }) => {
+const Sidebar = ({ isOpen, toggleSidebar, userId }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userID"); // Remove userID as well if needed
     navigate("/login");
+  };
+
+  const handleDashboardClick = () => {
+    navigate(`/admin/dashboard/${userId}`);
+    toggleSidebar(); // Close sidebar after navigation
   };
 
   return (
@@ -20,28 +25,25 @@ const Sidebar = ({ isOpen, toggleSidebar, isAdmin, userId }) => {
       </div>
       <div className="sidebar-items">
         {/* Dashboard link */}
+        <div className="sidebar-item" onClick={handleDashboardClick}>
+          <FaHome /> Dashboard
+        </div>
+
+        {/* User Management link */}
         <Link
-          to={isAdmin ? `/admin/dashboard/${userId}` : `/dashboard/${userId}`}
+          to="/admin/user-management"
           className="sidebar-item"
           onClick={toggleSidebar}
         >
-          <FaHome /> Dashboard
+          <FaUsers /> User Management
         </Link>
 
-        {/* User Management link */}
-        {isAdmin && (
-          <Link to="/admin/user-management" className="sidebar-item" onClick={toggleSidebar}>
-            <FaUsers /> User Management
-          </Link>
-        )}
-        {!isAdmin && (
-          <Link to="/user-management" className="sidebar-item" onClick={toggleSidebar}>
-            <FaUsers /> User Management
-          </Link>
-        )}
-
         {/* Tasks link */}
-        <Link to="/tasks" className="sidebar-item" onClick={toggleSidebar}>
+        <Link
+          to="/admin/task-management"
+          className="sidebar-item"
+          onClick={toggleSidebar}
+        >
           <FaFileAlt /> Tasks
         </Link>
 
@@ -56,8 +58,13 @@ const Sidebar = ({ isOpen, toggleSidebar, isAdmin, userId }) => {
           <FaSignOutAlt /> Logout
         </button>
       </div>
+      {/* Toggle sidebar icon */}
+      <FaBars className="sidebar-toggle-icon" onClick={toggleSidebar} />
     </div>
   );
 };
 
 export default Sidebar;
+
+
+

@@ -20,45 +20,69 @@
     }
   });
 
-  // Get all tasks with pagination
-  router.get('/', async (req, res) => {
-    try {
-      const page = parseInt(req.query.page) || 1; // Parse the page number from query params, default to page 1 if not provided
-      const limit = parseInt(req.query.limit) || 10; // Parse the limit (tasks per page) from query params, default to 10 if not provided
+  // Get all tasks with pagination and search
+router.get('/', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const searchQuery = req.query.search || '';
 
-      const startIndex = (page - 1) * limit; // Calculate the start index of tasks for the current page
-      const endIndex = page * limit; // Calculate the end index of tasks for the current page
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
-      const tasks = await Task.find()
-        .populate('assignees.user', 'username')
-        .populate('comments.user', 'username')
-        .sort({ createdAt: -1 }) // Sort tasks by createdAt field in descending order
-        .limit(limit) // Limit the number of tasks per page
-        .skip(startIndex); // Skip tasks before the start index for pagination
+    const regex = new RegExp(searchQuery, 'i');
 
-      const totalTasks = await Task.countDocuments(); // Get the total number of tasks
+    const tasks = await Task.find({
+      $or: [
+        { title: { $regex: regex } },
+        { description: { $regex: regex } },
+        // Add more fields for search if needed
+      ]
+    })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(startIndex)
+      .populate('assignees.user', 'username')
+      .populate('comments.user', 'username');
 
-      const pagination = {
-        currentPage: page,
-        totalPages: Math.ceil(totalTasks / limit), // Calculate the total number of pages
-      };
+    const totalTasks = await Task.countDocuments({
+      $or: [
+        { title: { $regex: regex } },
+        { description: { $regex: regex } },
+        // Add more fields for search if needed
+      ]
+    });
 
-      // Check if there are more tasks for the next page
-      if (endIndex < totalTasks) {
-        pagination.nextPage = page + 1;
-      }
+    const pagination = {
+      currentPage: page,
+      totalPages: Math.ceil(totalTasks / limit),
+    };
 
-      // Check if there are tasks before the current page
-      if (startIndex > 0) {
-        pagination.prevPage = page - 1;
-      }
-
-      res.json({ tasks, pagination });
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      res.status(500).json({ message: error.message });
+    if (endIndex < totalTasks) {
+      pagination.nextPage = page + 1;
     }
-  });
+
+    if (startIndex > 0) {
+      pagination.prevPage = page - 1;
+    }
+
+    res.json({ tasks, pagination });
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get task count
+router.get('/count', async (req, res) => {
+  try {
+    const taskCount = await Task.countDocuments();
+    res.json({ taskCount });
+  } catch (error) {
+    console.error('Error fetching task count:', error);
+    res.status(500).json({ message: 'Failed to fetch task count', error: error.message });
+  }
+});
 
   // Create a new task
   router.post('/', async (req, res) => {
@@ -163,21 +187,56 @@ router.put('/complete/:taskId', async (req, res) => {
   });
 
   // Update task
-  router.put('/:id', async (req, res) => {
-    const taskId = req.params.id;
-    const updatedTaskData = req.body;
+  // router.put('/:id', async (req, res) => {
+  //   const taskId = req.params.id;
+  //   const updatedTaskData = req.body;
 
-    try {
-      const task = await Task.findByIdAndUpdate(taskId, updatedTaskData, { new: true });
-      if (!task) {
-        return res.status(404).json({ message: 'Task not found' });
-      }
-      res.json(task);
-    } catch (error) {
-      console.error('Error updating task:', error);
-      res.status(500).json({ message: 'Failed to update task', error: error.message });
+  //   try {
+  //     const task = await Task.findByIdAndUpdate(taskId, updatedTaskData, { new: true });
+  //     if (!task) {
+  //       return res.status(404).json({ message: 'Task not found' });
+  //     }
+  //     res.json(task);
+  //   } catch (error) {
+  //     console.error('Error updating task:', error);
+  //     res.status(500).json({ message: 'Failed to update task', error: error.message });
+  //   }
+  // });
+
+  // Update a task
+router.put('/:taskId', async (req, res) => {
+  const { taskId } = req.params;
+  const { title, description, dueDateTime, priority, assignees, comments } = req.body;
+
+  try {
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
     }
-  });
+
+    // Update task fields
+    task.title = title || task.title;
+    task.description = description || task.description;
+    task.dueDateTime = dueDateTime || task.dueDateTime;
+    task.priority = priority || task.priority;
+
+    // Handle assignees and comments if needed
+    if (assignees && assignees.length > 0) {
+      task.assignees = assignees;
+    }
+    if (comments && comments.length > 0) {
+      task.comments = comments;
+    }
+
+    await task.save();
+
+    res.json({ message: 'Task updated successfully', task });
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
   // Delete task
   router.delete('/:id', async (req, res) => {
@@ -192,5 +251,6 @@ router.put('/complete/:taskId', async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   });
+
 
   module.exports = router;

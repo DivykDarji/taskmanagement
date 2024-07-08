@@ -1,25 +1,189 @@
-/* AdminDashboard.css */
-
-/* Style for the container div */
+/* Overall container */
 .admin-dashboard-container {
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 800px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+  display: flex;
+  min-height: 100vh; /* Ensure full viewport height */
+  font-family: 'Arial', sans-serif;
+}
+
+/* Sidebar styling */
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Sidebar links */
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.sidebar ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Main content area */
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto; /* Allow content to scroll if needed */
+  display: flex;
+  flex-direction: column;
+}
+
+.content-shifted {
+  margin-left: 250px; /* Shift content when sidebar is open */
+}
+
+/* Greeting section and profile details */
+.greeting-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-details {
+  display: flex;
+  align-items: center;
+}
+
+.profile-name-container {
+  display: flex;
+  align-items: center;
+}
+
+.profile-name {
+  margin-right: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+.dropdown-icon {
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+}
+
+.context-menu {
+  position: absolute;
+  top: 100%;
+  left: 20px; /* Adjust positioning as needed */
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  display: none;
+}
+
+.context-menu.active {
+  display: block;
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  color: #333;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.context-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Summary cards */
+.summary-section {
+  display: flex;
+  flex-wrap: wrap; /* Ensure cards wrap to new line on smaller screens */
+  justify-content: space-between;
+  gap: 20px; /* Adjust spacing between summary cards */
+}
+
+.summary-card {
+  flex: 1;
+  min-width: 250px; /* Minimum width to prevent squeezing on smaller screens */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  text-decoration: none; /* Remove underline from summary cards */
+  color: #333;
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px); /* Lift the card on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.summary-card-content {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  font-size: 32px;
+  color: #333;
+  margin-right: 20px;
+  transition: transform 0.3s ease; /* Add transition for icon */
+}
+
+.summary-card:hover .icon {
+  transform: scale(1.2); /* Scale up the icon on hover */
+}
+
+.card-content {
+  flex: 1;
+}
+
+.summary-title {
+  font-size: 20px;
+  margin-bottom: 8px; /* Adjusted for smaller margin */
+  color: #333;
+}
+
+.summary-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0; /* Adjusted for no margin */
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    flex-direction: column; /* Stack sidebar and content vertically */
   }
-  
-  /* Style for the heading */
-  .admin-dashboard-heading {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
+
+  .content-shifted {
+    margin-left: 0; /* Remove margin when sidebar is shifted */
   }
-  
-  /* Style for the user management section */
-  .user-management-section {
-    margin-top: 20px;
+
+  .summary-section {
+    flex-direction: column; /* Stack summary cards vertically on smaller screens */
+    gap: 20px; /* Maintain gap between summary cards */
   }
-  
+
+  .summary-card {
+    min-width: auto; /* Allow summary cards to flexibly adjust width */
+    width: 100%; /* Full width on smaller screens */
+  }
+}

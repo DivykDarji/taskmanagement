@@ -1,11 +1,9 @@
-// src/App.js
-import React from "react";
-import { BrowserRouter as Router, Route, Routes , useParams} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Banner from "./components/Banner";
 import Box from "./components/Box";
 import Signup from "./components/Signup";
 import Header from "./components/Header";
-import "./App.css";
 import Contact from "./components/Contact";
 import Learnmore from "./components/Learnmore";
 import Login from "./components/Login";
@@ -14,12 +12,33 @@ import ThankYouSignup from "./components/Thankyou";
 import UserManagement from "./components/Usermanagement";
 import UserEdit from './components/UserEdit';
 import AddTaskPage from "./components/AddTaskPage";
-import ProfilePage from "./components/ProfilePage"; // Import the ProfilePage component
+import ProfilePage from "./components/ProfilePage";
 import ForgotPassword from "./components/ForgotPassword";
-import ResetPasswordForm from "./components/ResetPasswordForm"; // Import your ResetPasswordForm component
-
+import ResetPasswordForm from "./components/ResetPasswordForm";
+import TaskManagement from "./components/TaskManagement";
+import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Example function to check if user is admin
+  const checkAdminStatus = () => {
+    // Implementing logic to determine if user is an admin
+    
+    return isAdmin;
+  };
+
+  // Simulate fetching admin status on component mount
+  useEffect(() => {
+    // Example: Fetch admin status from backend or set based on some condition
+    setIsAdmin(true); // Set to true for demo, replace with actual logic
+  }, []);
+
+  // Protected route component to handle admin route protection
+  const AdminRoute = ({ element, ...rest }) => {
+    return checkAdminStatus() ? element : <Navigate to="/login" />;
+  };
+
   return (
     <Router>
       <div className="wrapper">
@@ -28,17 +47,21 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          {/* <Route path="/reset-password/:token" render={(props) => <ResetPasswordForm token={props.match.params.token} />} /> */}
-          <Route path="/reset-password/:token" element={<ResetPasswordRoute />} />
-          <Route path="/dashboard/:id" element={<Dashboard />} /> 
+          <Route path="/reset-password/:token" element={<ResetPasswordForm />} />
+          <Route path="/dashboard/:id" element={<Dashboard />} />
           <Route path="/learnmore" element={<React.Fragment><Header /><Learnmore /></React.Fragment>} />
           <Route path="/thankyou-signup/:id" element={<ThankYouSignup />} />
           <Route path="/home" element={<Banner />} />
-          <Route path="/admin/dashboard/:userId" element={<UserManagement />} /> {/* Updated route for UserManagement */}
-          {/* <Route path="/user-management" element={<UserManagement />} /> */}
-          <Route path="/edit-user/:id" element={<UserEdit />} />
-          <Route path={`/add-task/:id`} element={<AddTaskPage />} />
-          <Route path="/profile/:id" element={<ProfilePage />} /> 
+          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/add-task/:id" element={<AddTaskPage />} />
+
+          {/* Protected admin routes */}
+          <Route path="/admin/dashboard/:userId" element={<AdminRoute element={<AdminDashboard />} />} />
+          <Route path="/admin/user-management" element={<AdminRoute element={<UserManagement />} />} />
+          <Route path="/admin/task-management" element={<AdminRoute element={<TaskManagement />} />} />
+          <Route path="/edit-user/:id" element={<AdminRoute element={<UserEdit />} />} />
+
+          {/* Default route */}
           <Route path="/" element={<Banner />} />
         </Routes>
         <Box />
@@ -46,11 +69,5 @@ function App() {
     </Router>
   );
 }
-// Create a separate component to handle the reset password route
-const ResetPasswordRoute = ({ match }) => {
-  const { token } = useParams();
-  return <ResetPasswordForm token={token} />;
-};
 
 export default App;
-
