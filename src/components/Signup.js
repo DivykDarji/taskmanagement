@@ -168,7 +168,7 @@ const Signup = () => {
       }
     } catch (error) {
       console.error("Error checking email existence:", error);
-      toast.error("Error checking email. Please try again.");
+     
     }
   };
 

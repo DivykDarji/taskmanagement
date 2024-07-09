@@ -62,7 +62,8 @@ const Login = () => {
         const user = response.data.user;
 
         if (user.isAdmin) {
-          navigate(`/admin/dashboard/${user._id}`);
+          // navigate(`/admin/dashboard/${user._id}`);
+          navigate(`/admin/dashboard/`);
         } else {
           navigate(`/dashboard/${user._id}`);
         }

@@ -4,9 +4,16 @@ require('dotenv').config(); // Load environment variables from .env file
 // Secret key for JWT
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Function to generate JWT token
-const generateToken = (payload) => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+// // Function to generate JWT token
+// const generateToken = (payload) => {
+//   return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' }); // Token expires in 1 hour
+// };
+const generateToken = (user) => {
+  const payload = {
+    id: user._id,
+    isAdmin: user.isAdmin,
+  };
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
 // Function to verify JWT token

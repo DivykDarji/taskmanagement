@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaUsers, FaFileAlt, FaCog, FaSignOutAlt, FaBars } from "react-icons/fa";
+import { FaHome, FaUsers, FaFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
 import "./Sidebar.css";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +14,7 @@ const Sidebar = ({ isOpen, toggleSidebar, userId }) => {
   };
 
   const handleDashboardClick = () => {
-    navigate(`/admin/dashboard/${userId}`);
+    navigate(`/admin/dashboard/`);
     toggleSidebar(); // Close sidebar after navigation
   };
 
@@ -24,7 +24,6 @@ const Sidebar = ({ isOpen, toggleSidebar, userId }) => {
         <h2 className="sidebar-title">Menu</h2>
       </div>
       <div className="sidebar-items">
-        {/* Dashboard link */}
         <div className="sidebar-item" onClick={handleDashboardClick}>
           <FaHome /> Dashboard
         </div>
@@ -35,7 +34,7 @@ const Sidebar = ({ isOpen, toggleSidebar, userId }) => {
           className="sidebar-item"
           onClick={toggleSidebar}
         >
-          <FaUsers /> User Management
+          <FaUsers /> Users
         </Link>
 
         {/* Tasks link */}
@@ -58,8 +57,6 @@ const Sidebar = ({ isOpen, toggleSidebar, userId }) => {
           <FaSignOutAlt /> Logout
         </button>
       </div>
-      {/* Toggle sidebar icon */}
-      <FaBars className="sidebar-toggle-icon" onClick={toggleSidebar} />
     </div>
   );
 };
