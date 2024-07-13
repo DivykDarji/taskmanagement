@@ -1,5 +1,8 @@
+
+
+
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom'; // Import Link for navigation
 import './Thankyou.css';
 import axios from 'axios';
 import { TwitterShareButton, FacebookShareButton, LinkedinShareButton } from 'react-share';
@@ -39,7 +42,6 @@ const ThankYou = () => {
         setLoading(false); // Set loading to false regardless of success or error
       }
     };
-    
 
     fetchUserData();
   }, [id]);
@@ -52,6 +54,7 @@ const ThankYou = () => {
         ) : (
           <>
             <h2>Thank You for Signing Up, {userData ? userData.username : ''}! 👋</h2>
+            <p>To see the full website, please <Link to="/login">login</Link>.</p> {/* Add this line */}
           </>
         )}
       </div>

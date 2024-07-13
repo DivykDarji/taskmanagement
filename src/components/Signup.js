@@ -8,6 +8,8 @@ import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import "./Signup.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import HourglassLoader from "./HourglassLoader"; // Adjust the path as per your file structure
+
 
 const showIcon = process.env.PUBLIC_URL + "/view.png";
 const hideIcon = process.env.PUBLIC_URL + "/hide.png";
@@ -262,7 +264,7 @@ const Signup = () => {
         </div>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Signing up..." : "Sign Up"}
+        {loading ? <HourglassLoader /> : "Sign Up"}
         </button>
         <div className="sign-in-with-google" onClick={handleSignupWithGoogle}>
           <span>Sign in with Google</span>

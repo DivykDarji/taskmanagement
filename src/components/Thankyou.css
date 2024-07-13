@@ -1,32 +1,69 @@
+/* Thankyou.css */
+
+/* Container styles */
 .thankyou-container {
-  margin: 20px; /* Add some margin to the container for visibility */
+  text-align: center;
+  margin: 20px auto;
   padding: 20px;
-  background-color: #f9f9f9; /* Light gray background */
+  border: 1px solid #ccc;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
-  color: #333; /* Dark text color */
+  max-width: 600px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.thankyou-container h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.thankyou-container p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* Social share container */
 .social-share-container {
-  text-align: center; /* Center the buttons horizontally */
-  margin-top: 20px; /* Add margin to separate from the thankyou-container */
+  text-align: center;
+  margin: 20px auto;
 }
 
 .share-via {
+  font-size: 1.2rem;
+  color: #666;
   margin-bottom: 10px;
 }
 
+.social-share-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
 .social-share-buttons > * {
-  margin: 0 10px;
-  padding: 10px;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: #fff;
-  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 1.8rem;
+  color: #555;
+  transition: color 0.3s ease;
 }
 
 .social-share-buttons > *:hover {
+  color: #007bff;
+}
+
+/* Login link */
+.thankyou-container a {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.thankyou-container a:hover {
   background-color: #0056b3;
 }

@@ -6,6 +6,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 import "./Login.css";
+import HourglassLoader from "./HourglassLoader"; // Adjust the path as per your file structure
+
 
 const showIcon = process.env.PUBLIC_URL + '/view.png';
 const hideIcon = process.env.PUBLIC_URL + '/hide.png';
@@ -144,7 +146,7 @@ const Login = () => {
             />
           </div>
           <button type="submit" disabled={loading}>
-            {loading ? "Logging ..." : "Log In"}
+          {loading ? <HourglassLoader /> : "Log In"}
           </button>
         </form>
       )}

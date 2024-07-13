@@ -74,10 +74,10 @@ async function startServer() {
   app.use('/tasks', tasksRouter);
 
   // Example protected route for admins only
-app.post('/admin', authMiddleware.authenticateToken, isAdmin, (req, res) => {
-  // If the execution reaches here, it means the user is an admin
-  res.json({ message: 'Admin route accessed successfully' });
-});
+  app.post('/admin/dashboard', authMiddleware.authenticateToken, isAdmin, (req, res) => {
+    // If the execution reaches here, it means the user is an admin
+    res.json({ message: 'Admin route accessed successfully' });
+  });
 
   app.use("/uploads/profileimages", express.static(path.join(__dirname, "uploads", "profileimages")));
 
@@ -97,3 +97,4 @@ app.post('/admin', authMiddleware.authenticateToken, isAdmin, (req, res) => {
 
 // Call the async function to start the server
 startServer();
+
