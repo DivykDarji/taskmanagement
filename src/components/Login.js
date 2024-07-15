@@ -1,13 +1,14 @@
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer
-import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Login.css";
-import HourglassLoader from "./HourglassLoader"; // Adjust the path as per your file structure
-
+import HourglassLoader from "./HourglassLoader"; // Import the HourglassLoader component
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import firebaseApp from "../firebaseConfig"; // Adjust the path as per your file structure
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const showIcon = process.env.PUBLIC_URL + '/view.png';
 const hideIcon = process.env.PUBLIC_URL + '/hide.png';
@@ -21,6 +22,41 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const auth = getAuth(firebaseApp);
+  const provider = new GoogleAuthProvider();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const response = await axios.post("http://localhost:5000/auth/google-login", {
+        email: user.email,
+      });
+
+      if (response.status === 200) {
+        toast.success("Login successful");
+
+        const userData = response.data.user;
+
+        if (userData.isAdmin) {
+          navigate(`/admin/dashboard/`);
+        } else {
+          navigate(`/dashboard/${userData._id}`);
+        }
+
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+      } else {
+        toast.error("Unexpected error. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Error logging in with Google. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
@@ -38,10 +74,10 @@ const Login = () => {
       if (response.data.exists) {
         setLoginStep(2);
       } else {
-        toast.error("Email does not exist. Please try again."); // Show error toast
+        toast.error("Email does not exist. Please try again.");
       }
     } catch (error) {
-      toast.error("Error checking email. Please try again."); // Show error toast
+      toast.error("Error checking email. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -59,12 +95,11 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Login successful"); // Show success toast
+        toast.success("Login successful");
 
         const user = response.data.user;
 
         if (user.isAdmin) {
-          // navigate(`/admin/dashboard/${user._id}`);
           navigate(`/admin/dashboard/`);
         } else {
           navigate(`/dashboard/${user._id}`);
@@ -73,10 +108,10 @@ const Login = () => {
         const token = response.data.token;
         localStorage.setItem("token", token);
       } else {
-        toast.error("Unexpected error. Please try again."); // Show error toast
+        toast.error("Unexpected error. Please try again.");
       }
     } catch (error) {
-      toast.error("Error logging in. Please try again."); // Show error toast
+      toast.error("Error logging in. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -102,7 +137,7 @@ const Login = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      toast.dismiss(); // Dismiss any active toast
+      toast.dismiss();
     }, 5000);
 
     return () => {
@@ -146,11 +181,23 @@ const Login = () => {
             />
           </div>
           <button type="submit" disabled={loading}>
-          {loading ? <HourglassLoader /> : "Log In"}
+            {loading ? <HourglassLoader /> : "Log In"}
           </button>
         </form>
       )}
-      <ToastContainer /> {/* Place ToastContainer component */}
+      {/* Sign in with Google section */}
+      <div className="google-signin-section">
+        <p>Or sign in with:</p>
+        <button className="google-signin-button" onClick={handleGoogleSignIn} disabled={loading}>
+          {loading ? <HourglassLoader /> : (
+            <>
+              <span>Sign in with Google</span>
+              <FontAwesomeIcon icon={faGoogle} className="google-icon" />
+            </>
+          )}
+        </button>
+      </div>
+      <ToastContainer />
       <p className="forgot-password-link">
         Forgot your password? <Link to="/forgot-password">Click here</Link>
       </p>
@@ -162,4 +209,3 @@ const Login = () => {
 };
 
 export default Login;
-

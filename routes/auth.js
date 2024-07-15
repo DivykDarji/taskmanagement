@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const mongoose = require("mongoose");
 const jwtUtils = require("./jwtUtils");
+const jwt = require('jsonwebtoken');
 // const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const firebaseApp = require("../src/firebaseConfig");
@@ -409,6 +410,7 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
+
 router.post("/users", async (req, res) => {
   try {
     const { username, email, phonenumber, password } = req.body;
@@ -482,6 +484,24 @@ router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ error: "Error updating user" });
+  }
+});
+
+router.post('/google-login', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token, user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 

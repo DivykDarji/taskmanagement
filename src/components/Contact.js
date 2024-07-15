@@ -11,19 +11,19 @@ const Contact = () => {
       <p>Feel Free to Reach out....Connect with me from the below platform !!</p>
       <div className="contact-icons">
         <a href="https://instagram.com/divydarji_?igshid=MzNlNGNkZWQ4Mg==" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faInstagram} />
+          <FontAwesomeIcon icon={faInstagram} className="icon" />
         </a>
         <a href="https://twitter.com/DivyDarji_4?t=HaE-eK1BpVbZfCs5PDTsHA&s=09" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faTwitter} /> 
+          <FontAwesomeIcon icon={faTwitter} className="icon" /> 
         </a>
         <a href="https://wa.me/9724020904" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faWhatsapp} /> 
+          <FontAwesomeIcon icon={faWhatsapp} className="icon" /> 
         </a>
         <a href="mailto:divydarji02@gmail.com" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faGoogle} /> 
+          <FontAwesomeIcon icon={faGoogle} className="icon" /> 
         </a>
         <a href="https://www.linkedin.com/in/divy-darji-9a6a14201" target="_blank" rel="noopener noreferrer">
-          <FontAwesomeIcon icon={faLinkedin} /> 
+          <FontAwesomeIcon icon={faLinkedin} className="icon" /> 
         </a>
       </div>
     </div>

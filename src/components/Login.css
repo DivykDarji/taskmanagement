@@ -1,5 +1,4 @@
-/* Login.css */
-
+/* Ensure the .login-container is positioned relatively for proper z-index handling */
 .login-container {
   max-width: 400px;
   margin: 50px auto;
@@ -19,7 +18,7 @@
 .login-container form {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* Center align form content */
   width: 100%;
 }
 
@@ -123,11 +122,25 @@
   border-color: #007bff;
 }
 
-/* Responsive Styles */
+/* Center align the 'Or sign in with:' section */
+.google-signin-section {
+  text-align: center;
+  margin-top: 20px;
+}
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
   .login-container {
-    max-width: 90%;
-    margin: 50px auto;
+    max-width: 90%; /* Adjust max-width for smaller screens */
+    margin: 30px auto; /* Adjust margin for smaller screens */
   }
+
+  .login-container h2 {
+    font-size: 20px; /* Adjust font size for smaller screens */
+  }
+
+  .login-container button {
+    padding: 10px; /* Adjust button padding for smaller screens */
+  }
+  
+  /* Add more specific adjustments as needed */
 }
