@@ -42,6 +42,7 @@ router.get('/', async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(startIndex)
+      .populate('createdBy', 'username')
       .populate('assignees.user', 'username')
       .populate('comments.user', 'username');
 

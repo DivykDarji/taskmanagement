@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./TaskManagement.css";
@@ -143,6 +145,7 @@ const TaskManagement = ({ isAdmin, userId }) => {
                 <h3>{task.title}</h3>
                 <p>Description: {task.description}</p>
                 <p>Due Date: {task.dueDateTime}</p>
+                <p>Created By: {task.createdBy.username}</p> {/* Display the creator */}
                 <div className="button-container">
                   <button
                     className="button delete-button"
