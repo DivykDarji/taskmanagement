@@ -10,6 +10,8 @@ divy-portfolio-website/
 |--node modules/
 |-- public/
 |   |-- index.html
+|-- build/
+    |--static
 |-- src/
       |-- Components/
                    |--AddTask.css
@@ -57,6 +59,7 @@ divy-portfolio-website/
      |--jwtUtils.js
 |-- package.json
 |-- server.js
+|-- web.config
 |--UpdateUsers.js
 |--firebase.js
 |--generateSecretKey.js

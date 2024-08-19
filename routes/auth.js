@@ -201,14 +201,14 @@ router.post("/forgot-password", async (req, res) => {
     // Generate a token
     const token = crypto.randomBytes(20).toString("hex");
 
-    // Set token and expiration time (1 hour from now)
+    // Set token and expiration time (10min hour from now)
     user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    user.resetPasswordExpires = Date.now() + 600000; // 10min
 
     await user.save();
 
     // Send email with reset link
-    const resetUrl = `http://localhost:3000/reset-password/${token}`;
+    const resetUrl = `http://localhost/reset-password/${token}`;
     const mailOptions = {
       from: `"Support Team" <${process.env.EMAIL_USER}>`,
       to: user.email,
@@ -217,7 +217,7 @@ router.post("/forgot-password", async (req, res) => {
         <p>Dear ${user.username},</p>
         <p>You requested a password reset. Please click the link below to reset your password:</p>
         <a href="${resetUrl}">Reset Password</a>
-        <p>This link will expire in 1 hour.</p>
+        <p>This link will expire in 10 minutes.</p>
         <p>Best regards,</p>
         <p>Support Team</p>
       `,
@@ -273,6 +273,27 @@ router.post("/reset-password/:token", async (req, res) => {
   } catch (error) {
     console.error("Error resetting password:", error);
     res.status(500).json({ error: "Error resetting password" });
+  }
+});
+
+
+router.get("/validate-token/:token", async (req, res) => {
+  const { token } = req.params;
+
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: "Password reset token is invalid or has expired" });
+    }
+
+    res.status(200).json({ message: "Token is valid" });
+  } catch (error) {
+    console.error("Error validating token:", error);
+    res.status(500).json({ error: "Error validating token" });
   }
 });
 
