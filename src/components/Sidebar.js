@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaUsers, FaFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUsers, FaFileAlt, FaSignOutAlt } from "react-icons/fa";
 import "./Sidebar.css";
 import { useNavigate } from "react-router-dom";
 
@@ -44,11 +44,6 @@ const Sidebar = ({ isOpen, toggleSidebar, userId }) => {
           onClick={toggleSidebar}
         >
           <FaFileAlt /> Tasks
-        </Link>
-
-        {/* Settings link */}
-        <Link to="/settings" className="sidebar-item" onClick={toggleSidebar}>
-          <FaCog /> Settings
         </Link>
       </div>
       <div className="sidebar-footer">
