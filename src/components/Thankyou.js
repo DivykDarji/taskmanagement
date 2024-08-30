@@ -20,7 +20,7 @@ const ThankYou = () => {
     const fetchUserData = async () => {
       try {
         // Fetch user data from the API using the id
-        const response = await axios.get(`http://localhost:5000/auth/users/${id}`);
+        const response = await axios.get(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`);
         console.log('API Response:', response.data); // Log the API response
     
         // Check if the response contains user data

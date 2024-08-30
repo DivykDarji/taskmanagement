@@ -38,7 +38,7 @@ const PasswordChangeForm = ({ userId }) => {
 
     try {
       // Update password
-      await axios.put(`http://localhost:5000/auth/users/${userId}/password`, {
+      await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${userId}/password`, {
         currentPassword,
         newPassword,
       });

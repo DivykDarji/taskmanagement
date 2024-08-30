@@ -100,10 +100,10 @@ const AddTaskPage = ({ userId, closeModal, updateTasks, task }) => {
       
       if (task) {
         // If task exists, send a PUT request to update the task
-        await axios.put(`http://localhost:5000/tasks/${task._id}`, taskData);
+        await axios.put(`https://taskmangement-backend-v1o7.onrender.com/tasks/${task._id}`, taskData);
       } else {
         // Otherwise, send a POST request to create a new task
-        await axios.post('http://localhost:5000/tasks', taskData);
+        await axios.post('https://taskmangement-backend-v1o7.onrender.com/tasks', taskData);
       }
 
       // Call the updateTasks and closeModal functions after successful addition/editing

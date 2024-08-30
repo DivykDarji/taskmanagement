@@ -121,7 +121,7 @@
 //         password
 //       );
 
-//       await axios.post("http://localhost:5000/auth/signup", {
+//       await axios.post("https://taskmangement-backend-v1o7.onrender.com/auth/signup", {
 //         email,
 //         username,
 //         phonenumber,
@@ -129,7 +129,7 @@
 //         authMethod: "traditional",
 //       });
 
-//       await axios.post("http://localhost:5000/auth/send-email", {
+//       await axios.post("https://taskmangement-backend-v1o7.onrender.com/auth/send-email", {
 //         email,
 //         name: username,
 //       });
@@ -155,7 +155,7 @@
 //   const checkEmailExists = async (email) => {
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:5000/auth/check-email",
+//         "https://taskmangement-backend-v1o7.onrender.com/auth/check-email",
 //         { email }
 //       );
 //       if (response.data.exists) {
@@ -428,7 +428,7 @@ const Signup = () => {
         password
       );
 
-      await axios.post("http://localhost:5000/auth/signup", {
+      await axios.post("https://taskmangement-backend-v1o7.onrender.com/auth/signup", {
         email,
         username,
         phonenumber,
@@ -436,7 +436,7 @@ const Signup = () => {
         authMethod: "traditional",
       });
 
-      await axios.post("http://localhost:5000/auth/send-email", {
+      await axios.post("https://taskmangement-backend-v1o7.onrender.com/auth/send-email", {
         email,
         name: username,
       });
@@ -462,7 +462,7 @@ const Signup = () => {
   const checkEmailExists = async (email) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/check-email",
+        "https://taskmangement-backend-v1o7.onrender.com/auth/check-email",
         { email }
       );
       if (response.data.exists) {

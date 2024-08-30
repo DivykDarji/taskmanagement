@@ -13,7 +13,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`http://localhost:5000/auth/forgot-password`, { email });
+      const response = await axios.post(`https://taskmangement-backend-v1o7.onrender.com/auth/forgot-password`, { email });
 
       if (response.status === 200) {
         toast.success(response.data.message);

@@ -21,7 +21,7 @@ const AdminDashboard = ({ isOpen, toggleSidebar, isAdmin, userId }) => {
           throw new Error('Token not found');
         }
 
-        const response = await axios.get('http://localhost:5000/auth/count', {
+        const response = await axios.get('https://taskmangement-backend-v1o7.onrender.com/auth/count', {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -38,7 +38,7 @@ const AdminDashboard = ({ isOpen, toggleSidebar, isAdmin, userId }) => {
           throw new Error('Token not found');
         }
 
-        const response = await axios.get('http://localhost:5000/tasks/count', {
+        const response = await axios.get('https://taskmangement-backend-v1o7.onrender.com/tasks/count', {
           headers: { Authorization: `Bearer ${token}` },
         });
 

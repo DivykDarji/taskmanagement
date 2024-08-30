@@ -31,7 +31,7 @@ const Login = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      const response = await axios.post("http://localhost:5000/auth/google-login", {
+      const response = await axios.post("https://taskmangement-backend-v1o7.onrender.com/auth/google-login", {
         email: user.email,
       });
 
@@ -65,7 +65,7 @@ const Login = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/auth/check-email",
+        "https://taskmangement-backend-v1o7.onrender.com/auth/check-email",
         {
           email: formData.email,
         }
@@ -90,7 +90,7 @@ const Login = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/auth/login",
+        "https://taskmangement-backend-v1o7.onrender.com/auth/login",
         formData
       );
 

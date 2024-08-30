@@ -38,7 +38,7 @@ const Dashboard = () => {
   const fetchTasks = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/tasks/user/${id}`
+        `https://taskmangement-backend-v1o7.onrender.com/tasks/user/${id}`
       );
       if (Array.isArray(response.data)) {
         setTasks(response.data);
@@ -64,7 +64,7 @@ const Dashboard = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/auth/users/${id}`,
+          `https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`,
           {
             headers: {
               Authorization: `Bearer ${storedToken}`,
@@ -86,7 +86,7 @@ const Dashboard = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/tasks/user/${id}`,
+          `https://taskmangement-backend-v1o7.onrender.com/tasks/user/${id}`,
           {
             headers: {
               Authorization: `Bearer ${storedToken}`,
@@ -133,7 +133,7 @@ const Dashboard = () => {
 
     try {
       // Update task completion status in backend
-      await axios.put(`http://localhost:5000/tasks/complete/${taskId}`);
+      await axios.put(`https://taskmangement-backend-v1o7.onrender.com/tasks/complete/${taskId}`);
 
       // Find the completed task and update its status in the local state
       const updatedTasks = tasks.map((task) =>
@@ -299,7 +299,7 @@ const Dashboard = () => {
   const handleDeleteTask = async (taskId) => {
     try {
       // Send a DELETE request to delete the task
-      await axios.delete(`http://localhost:5000/tasks/${taskId}`);
+      await axios.delete(`https://taskmangement-backend-v1o7.onrender.com/tasks/${taskId}`);
       // Fetch the updated tasks list
       fetchTasks();
       // Close the task details modal
@@ -329,7 +329,7 @@ const Dashboard = () => {
             <img
               src={
                 userData && userData.profileImage
-                  ? `http://localhost:5000/uploads/profileImages/${userData.profileImage}`
+                  ? `https://taskmangement-backend-v1o7.onrender.com/uploads/profileImages/${userData.profileImage}`
                   : "/default-profile-image.jpg"
               }
               alt="Profile"
@@ -501,7 +501,7 @@ const Dashboard = () => {
               // Update the task in the backend and state
               axios
                 .put(
-                  `http://localhost:5000/tasks/${updatedTask._id}`,
+                  `https://taskmangement-backend-v1o7.onrender.com/tasks/${updatedTask._id}`,
                   updatedTask
                 )
                 .then((response) => fetchTasks())

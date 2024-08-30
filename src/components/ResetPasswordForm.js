@@ -18,7 +18,7 @@
 
 //     try {
 //       const response = await axios.post(
-//         `http://localhost:5000/auth/reset-password/${token}`,
+//         `https://taskmangement-backend-v1o7.onrender.com/auth/reset-password/${token}`,
 //         { password }
 //       );
 
@@ -107,7 +107,7 @@ const ResetPasswordForm = ({ token }) => {
     const verifyToken = async () => {
       try {
         // Validate token on page load
-        await axios.get(`http://localhost:5000/auth/validate-token/${token}`);
+        await axios.get(`https://taskmangement-backend-v1o7.onrender.com/auth/validate-token/${token}`);
       } catch (error) {
         console.error("Token validation error:", error);
         if (error.response && error.response.data.error) {
@@ -133,7 +133,7 @@ const ResetPasswordForm = ({ token }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/auth/reset-password/${token}`,
+        `https://taskmangement-backend-v1o7.onrender.com/auth/reset-password/${token}`,
         { password }
       );
 

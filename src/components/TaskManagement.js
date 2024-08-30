@@ -28,7 +28,7 @@ const TaskManagement = ({ isAdmin, userId }) => {
 
   const fetchTasks = useCallback(async (searchQuery) => {
     try {
-      const response = await axios.get(`http://localhost:5000/tasks`, {
+      const response = await axios.get(`https://taskmangement-backend-v1o7.onrender.com/tasks`, {
         params: {
           page: currentPage,
           search: searchQuery,
@@ -55,7 +55,7 @@ const TaskManagement = ({ isAdmin, userId }) => {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:5000/tasks/${taskId}`, {
+      await axios.delete(`https://taskmangement-backend-v1o7.onrender.com/tasks/${taskId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

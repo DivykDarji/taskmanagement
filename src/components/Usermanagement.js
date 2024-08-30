@@ -28,7 +28,7 @@ const UserManagement = ({ isAdmin, userId }) => {
   const fetchUsers = useCallback(
     async (searchQuery) => {
       try {
-        const response = await axios.get(`http://localhost:5000/auth/users`, {
+        const response = await axios.get(`https://taskmangement-backend-v1o7.onrender.com/auth/users`, {
           params: {
             page: currentPage,
             search: searchQuery,
@@ -65,7 +65,7 @@ const UserManagement = ({ isAdmin, userId }) => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:5000/auth/users/${userId}`, {
+      await axios.delete(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

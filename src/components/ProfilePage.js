@@ -27,7 +27,7 @@ const ProfilePage = () => {
   useEffect(() => {
     // Fetch user data from backend based on the user ID
     axios
-      .get(`http://localhost:5000/auth/users/${id}`)
+      .get(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`)
       .then((response) => {
         setUser(response.data.user);
       })
@@ -68,7 +68,7 @@ const ProfilePage = () => {
     }
 
     try {
-      await axios.put(`http://localhost:5000/auth/users/${id}`, formData, {
+      await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -170,7 +170,7 @@ const ProfilePage = () => {
             )}
             {!imagePreview && user.profileImage && (
               <img
-                src={`http://localhost:5000/uploads/profileImages/${user.profileImage}`}
+                src={`https://taskmangement-backend-v1o7.onrender.com/uploads/profileImages/${user.profileImage}`}
                 alt="Profile"
                 className="profile-image"
               />

@@ -21,7 +21,7 @@ const TaskFormModal = ({ id, onClose, onAddTask }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/categories');
+      const response = await axios.get('https://taskmangement-backend-v1o7.onrender.com/categories');
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -30,7 +30,7 @@ const TaskFormModal = ({ id, onClose, onAddTask }) => {
 
   const fetchAssignees = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/assignees');
+      const response = await axios.get('https://taskmangement-backend-v1o7.onrender.com/assignees');
       setAssignees(response.data);
     } catch (error) {
       console.error('Error fetching assignees:', error);
@@ -40,7 +40,7 @@ const TaskFormModal = ({ id, onClose, onAddTask }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/tasks', {
+      await axios.post('https://taskmangement-backend-v1o7.onrender.com/tasks', {
         title,
         description,
         dueDate,
@@ -61,7 +61,7 @@ const TaskFormModal = ({ id, onClose, onAddTask }) => {
 
   const handleAddComment = async () => {
     try {
-      await axios.post('http://localhost:5000/tasks/comment', {
+      await axios.post('https://taskmangement-backend-v1o7.onrender.com/tasks/comment', {
         taskId: 'taskId', // Pass taskId here
         comment: comment
       });

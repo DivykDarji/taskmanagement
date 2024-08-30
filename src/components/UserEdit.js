@@ -18,7 +18,7 @@ const UserEdit = () => {
     useEffect(() => {
       const fetchUser = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/auth/users/${id}`);
+          const response = await axios.get(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`);
           const userData = response.data.user; // Assuming the user data is nested under a 'user' property
           setFormData({
             username: userData.username || '',
@@ -46,7 +46,7 @@ const UserEdit = () => {
     const updateUser = async (event) => {
       event.preventDefault();
       try {
-        await axios.put(`http://localhost:5000/auth/users/${id}`, formData);
+        await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData);
         navigate('/user-management');
       } catch (error) {
         console.error('Error updating user:', error);
