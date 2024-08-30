@@ -208,7 +208,7 @@ router.post("/forgot-password", async (req, res) => {
     await user.save();
 
     // Send email with reset link
-    const resetUrl = `http://localhost/reset-password/${token}`;
+    const resetUrl = `https://taskmanagement-inky.vercel.app/reset-password/${token}`;
     const mailOptions = {
       from: `"Support Team" <${process.env.EMAIL_USER}>`,
       to: user.email,
