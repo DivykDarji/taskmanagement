@@ -1,25 +1,56 @@
-const express = require("express");
+// const express = require("express");
+// const router = express.Router();
+// const multer = require("multer");
+// const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// const cloudinary = require("../config/cloudinary");
+// const User = require("../models/User");
+
+// // Configure multer storage to use Cloudinary
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: 'uploads/profileImages',
+//     format: async (req, file) => 'png', // Specify image format
+//     public_id: (req, file) => `${Date.now()}_${file.originalname}`, // Unique filename
+//     resource_type: "image",
+//   },
+// });
+
+// const upload = multer({ storage: storage });
+
+// router.post('/', upload.single('profileImage'), async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ error: 'No file uploaded' });
+//     }
+
+//     const userId = req.user._id;
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     // Save the Cloudinary URL to the user's profileImage field
+//     user.profileImage = req.file.path; // Cloudinary URL
+//     await user.save();
+
+//     res.json({ url: req.file.path });
+//   } catch (error) {
+//     console.error("Error uploading profile image:", error);
+//     res.status(500).json({ error: "Error uploading profile image" });
+//   }
+// });
+
+// module.exports = router;
+
+
+const express = require('express');
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
-const crypto = require("crypto");
-const { v4: uuidv4 } = require('uuid'); // Import uuidv4 function from uuid package
-const User = require("../models/User");
+const multer = require('multer');
+const bucket = require('../src/firebase-config'); // Import the bucket instance
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/profileImages');
-  },
-  filename: function (req, file, cb) {
-    crypto.randomBytes(16, (err, raw) => {
-      if (err) return cb(err);
-      const filename = `${uuidv4()}${path.extname(file.originalname)}`; // Generate GUID + original extension
-      cb(null, filename);
-    });
-  }
-});
-
-const upload = multer({ storage: storage });
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
 
 router.post('/', upload.single('profileImage'), async (req, res) => {
   try {
@@ -27,23 +58,29 @@ router.post('/', upload.single('profileImage'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const userId = req.user._id;
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    const file = req.file;
+    const blob = bucket.file(`profileImages/${Date.now()}_${file.originalname}`);
+    const blobStream = blob.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
 
-    user.profileImage = req.file.filename;
-    await user.save();
+    blobStream.on('error', (err) => {
+      console.error('Error uploading file:', err);
+      res.status(500).json({ error: 'Error uploading file' });
+    });
 
-    res.json({ filename: req.file.filename });
+    blobStream.on('finish', async () => {
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+      res.json({ url: publicUrl });
+    });
+
+    blobStream.end(file.buffer);
   } catch (error) {
-    console.error("Error uploading profile image:", error);
-    res.status(500).json({ error: "Error uploading profile image" });
+    console.error('Error uploading profile image:', error);
+    res.status(500).json({ error: 'Error uploading profile image' });
   }
 });
-
-// Serve static files directly using express.static middleware
-router.use('/uploads', express.static(path.join(__dirname, '../uploads/profileImages')));
 
 module.exports = router;

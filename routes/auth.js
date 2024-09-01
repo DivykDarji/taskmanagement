@@ -16,23 +16,24 @@ const crypto = require("crypto");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
+// const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// const cloudinary = require("../config/cloudinary");
 require("dotenv").config(); // Load environment variables from .env file
+const { bucket } = require("../src/firebase-config");
+const multerMemoryStorage = multer.memoryStorage();
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/profileImages");
-  },
-  filename: function (req, file, cb) {
-    crypto.randomBytes(16, (err, raw) => {
-      if (err) return cb(err);
-      const filename = `${uuidv4()}${path.extname(file.originalname)}`; // Generate GUID + original extension
-      cb(null, filename);
-    });
-  },
-});
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: 'profileImages',
+//     allowed_formats: ['jpg', 'png', 'jpeg'],
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
+
+// Middleware for file upload
+const upload = multer({ storage: multerMemoryStorage });
 
 // Email configuration
 
@@ -208,7 +209,7 @@ router.post("/forgot-password", async (req, res) => {
     await user.save();
 
     // Send email with reset link
-    const resetUrl = `https://taskmanagement-inky.vercel.app/reset-password/${token}`;
+    const resetUrl = `http://localhost/reset-password/${token}`;
     const mailOptions = {
       from: `"Support Team" <${process.env.EMAIL_USER}>`,
       to: user.email,
@@ -472,7 +473,44 @@ router.post("/users", async (req, res) => {
   }
 });
 
-// Update user route handler
+// // Update user route handler
+// router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
+//   try {
+//     const { username, email, phonenumber, password, isAdmin } = req.body;
+//     const userId = req.params.id;
+//     const user = await User.findById(userId);
+
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     // Update fields if they exist in the request body
+//     user.username = username || user.username;
+//     user.email = email || user.email;
+//     user.phonenumber = phonenumber || user.phonenumber;
+//     user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
+
+//     // Update password only if it's provided
+//     if (password) {
+//       const hashedPassword = await bcrypt.hash(password, 10);
+//       user.password = hashedPassword;
+//     }
+
+//     // Update profile image if it's uploaded
+//     if (req.file) {
+//       // req.file.path will have the Cloudinary URL if using Cloudinary's Multer storage
+//       user.profileImage = req.file.path;
+//     }
+
+//     await user.save();
+//     res.json({ message: "User updated successfully", user });
+//   } catch (error) {
+//     console.error("Error updating user:", error);
+//     res.status(500).json({ error: "Error updating user" });
+//   }
+// });
+
+// Update user route handler (with Firebase Storage integration)
 router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
   try {
     const { username, email, phonenumber, password, isAdmin } = req.body;
@@ -497,7 +535,17 @@ router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
 
     // Update profile image if it's uploaded
     if (req.file) {
-      user.profileImage = req.file.filename;
+      const file = req.file;
+      const fileName = `${Date.now()}_${file.originalname}`;
+      const fileUpload = bucket.file(fileName);
+
+      await fileUpload.save(file.buffer, {
+        contentType: file.mimetype,
+        public: true,
+      });
+
+      const fileUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+      user.profileImage = fileUrl;
     }
 
     await user.save();
