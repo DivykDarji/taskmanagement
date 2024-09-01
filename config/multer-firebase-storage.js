@@ -1,12 +1,11 @@
 // config/multer-firebase-storage.js
 const { Storage } = require('@google-cloud/storage');
 const Multer = require('multer');
-const path = require('path');
-const bucket = require('../src/firebase-config'); // Adjust path according to your directory structure
+const bucketName = 'website-portfolio-react.appspot.com'; // Replace with your Firebase Storage bucket name
 
 // Initialize Google Cloud Storage
 const storage = new Storage();
-const bucketName = 'website-portfolio-react.appspot.com'; // Replace with your Firebase Storage bucket URL
+const bucket = storage.bucket(bucketName);
 
 const multerFirebaseStorage = Multer.memoryStorage(); // Store file in memory
 
@@ -33,7 +32,7 @@ const uploadToFirebase = (req, res, next) => {
   stream.on('finish', () => {
     file.getSignedUrl({
       action: 'read',
-      expires: '03-09-2491',
+      expires: Date.now() + 3600 * 1000, // URL expires in 1 hour
     }, (err, url) => {
       if (err) {
         console.error('Error getting signed URL:', err);
