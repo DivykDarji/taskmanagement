@@ -19,9 +19,7 @@ const nodemailer = require("nodemailer");
 // const { CloudinaryStorage } = require('multer-storage-cloudinary');
 // const cloudinary = require("../config/cloudinary");
 require("dotenv").config(); // Load environment variables from .env file
-const { bucket } = require("../src/firebase-config");
-const multerMemoryStorage = multer.memoryStorage();
-
+const { upload, uploadToFirebase } = require('../config/multer-firebase-storage');
 // const storage = new CloudinaryStorage({
 //   cloudinary: cloudinary,
 //   params: {
@@ -33,7 +31,7 @@ const multerMemoryStorage = multer.memoryStorage();
 // const upload = multer({ storage: storage });
 
 // Middleware for file upload
-const upload = multer({ storage: multerMemoryStorage });
+// const upload = multer({ storage: multerMemoryStorage });
 
 // Email configuration
 
@@ -511,7 +509,7 @@ router.post("/users", async (req, res) => {
 // });
 
 // Update user route handler (with Firebase Storage integration)
-router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
+router.put("/users/:id", upload.single('profileImage'), uploadToFirebase, async (req, res) => {
   try {
     const { username, email, phonenumber, password, isAdmin } = req.body;
     const userId = req.params.id;
@@ -534,19 +532,8 @@ router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
     }
 
     // Update profile image if it's uploaded
-    if (req.file) {
-      const file = req.file;
-      const fileName = `${Date.now()}_${file.originalname}`;
-      const fileUpload = bucket.file(fileName);
-
-      // Upload file to Firebase Storage
-      await fileUpload.save(file.buffer, {
-        contentType: file.mimetype,
-        public: true,
-      });
-
-      const fileUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
-      user.profileImage = fileUrl;
+    if (req.file && req.file.firebaseUrl) {
+      user.profileImage = req.file.firebaseUrl;
     }
 
     await user.save();
