@@ -281,7 +281,7 @@ const ProfilePage = () => {
     if (newProfileImage) {
       formData.append("profileImage", newProfileImage);
     }
-
+  
     try {
       await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
         headers: {
@@ -297,6 +297,7 @@ const ProfilePage = () => {
       console.error("Error updating user data:", error);
     }
   };
+  
 
   const handleGoToDashboard = () => {
     navigate(`/dashboard/${user._id}`);

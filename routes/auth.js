@@ -539,6 +539,7 @@ router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
       const fileName = `${Date.now()}_${file.originalname}`;
       const fileUpload = bucket.file(fileName);
 
+      // Upload file to Firebase Storage
       await fileUpload.save(file.buffer, {
         contentType: file.mimetype,
         public: true,
@@ -593,10 +594,10 @@ router.delete("/users/:id", async (req, res) => {
 });
 
 // Serve static files directly using express.static middleware
-router.use(
-  "/uploads",
-  express.static(path.join(__dirname, "../uploads/profileImages"))
-);
+// router.use(
+//   "/uploads",
+//   express.static(path.join(__dirname, "../uploads/profileImages"))
+// );
 
 
 module.exports = router;

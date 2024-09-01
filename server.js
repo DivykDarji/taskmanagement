@@ -103,22 +103,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
-// const path = require("path");
-const User = require('./models/User');
-const bcrypt = require('bcrypt');
 const authRoutes = require("./routes/auth");
-const tasksRouter = require('./routes/taskRoute'); 
+const tasksRouter = require('./routes/taskRoute');
 const authMiddleware = require('./src/middlewares/authMiddleware');
 const isAdmin = require('./src/middlewares/isAdminMiddleware');
 const cors = require("cors");
-const { upload, uploadToFirebase } = require('./config/multer-firebase-storage'); // Import your custom multer storage
 
 require("dotenv").config(); // Load environment variables from a .env file if present
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors()); 
+app.use(cors());
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -160,40 +156,8 @@ async function startServer() {
     res.json({ message: 'Admin route accessed successfully' });
   });
 
-  app.put('/users/:id', upload.single('profileImage'), uploadToFirebase, async (req, res) => {
-    try {
-      const { username, email, phonenumber, password, isAdmin } = req.body;
-      const userId = req.params.id;
-      const user = await User.findById(userId);
-
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      // Update fields if they exist in the request body
-      user.username = username || user.username;
-      user.email = email || user.email;
-      user.phonenumber = phonenumber || user.phonenumber;
-      user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
-
-      // Update password only if it's provided
-      if (password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = hashedPassword;
-      }
-
-      // Update profile image if it's uploaded
-      if (req.file && req.file.firebaseUrl) {
-        user.profileImage = req.file.firebaseUrl; // Firebase Storage URL
-      }
-
-      await user.save();
-      res.json({ message: "User updated successfully", user });
-    } catch (error) {
-      console.error("Error updating user:", error);
-      res.status(500).json({ error: "Error updating user" });
-    }
-  });
+  // This route may not be needed if you are handling updates in `authRoutes`
+  // app.put('/users/:id', upload.single('profileImage'), async (req, res) => { ... });
 
   app.use((err, req, res, next) => {
     console.error("Global error handler:", err);
