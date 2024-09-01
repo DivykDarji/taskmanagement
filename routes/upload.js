@@ -44,10 +44,58 @@
 // module.exports = router;
 
 
+// const express = require('express');
+// const router = express.Router();
+// const multer = require('multer');
+// const { storage } = require('../src/firebase-config'); // Import the storage instance from firebase-config
+
+// const multerStorage = multer.memoryStorage();
+// const upload = multer({ storage: multerStorage });
+
+// router.post('/', upload.single('profileImage'), async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ error: 'No file uploaded' });
+//     }
+
+//     const file = req.file;
+//     const blob = storage.bucket().file(`profileImages/${Date.now()}_${file.originalname}`);
+//     const blobStream = blob.createWriteStream({
+//       metadata: {
+//         contentType: file.mimetype,
+//       },
+//     });
+
+//     blobStream.on('error', (err) => {
+//       console.error('Error uploading file:', err);
+//       res.status(500).json({ error: 'Error uploading file' });
+//     });
+
+//     blobStream.on('finish', async () => {
+//       const publicUrl = `https://storage.googleapis.com/${storage.bucket().name}/${blob.name}`;
+//       res.json({ url: publicUrl });
+//     });
+
+//     blobStream.end(file.buffer);
+//   } catch (error) {
+//     console.error('Error uploading profile image:', error);
+//     res.status(500).json({ error: 'Error uploading profile image' });
+//   }
+// });
+
+// module.exports = router;
+
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const bucket = require('../src/firebase-config'); // Import the bucket instance
+const { Storage } = require('@google-cloud/storage'); // Import the Storage class from the Google Cloud library
+const path = require('path');
+
+// Initialize Google Cloud Storage
+const storage = new Storage({
+  keyFilename: path.join(__dirname, '../config/serviceAccountKey.json'), // Path to your service account key
+});
+const bucket = storage.bucket('website-portfolio-react.appspot.com'); // Use your Firebase Storage bucket name
 
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
@@ -73,6 +121,7 @@ router.post('/', upload.single('profileImage'), async (req, res) => {
 
     blobStream.on('finish', async () => {
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+      req.file.url = publicUrl; // Set the URL in req.file
       res.json({ url: publicUrl });
     });
 
@@ -84,3 +133,4 @@ router.post('/', upload.single('profileImage'), async (req, res) => {
 });
 
 module.exports = router;
+

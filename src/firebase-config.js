@@ -1,14 +1,12 @@
-// firebase-config.js
 const admin = require('firebase-admin');
-const serviceAccount = require('../config/serviceAccountKey.json');// Update this path to the location of your service account key
+const serviceAccount = require('../config/serviceAccountKey.json'); // Path to your Firebase Admin SDK key
 
-// Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: 'website-portfolio-react.appspot.com', // Replace with your bucket name
+  storageBucket: 'website-portfolio-react.appspot.com', // Your Firebase Storage bucket
 });
 
-// Get a reference to the storage bucket
-const bucket = admin.storage().bucket();
+const auth = admin.auth();
+const storage = admin.storage().bucket();
 
-module.exports = bucket;
+module.exports = { auth, storage }

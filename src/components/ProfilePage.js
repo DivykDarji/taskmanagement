@@ -219,14 +219,221 @@
 
 
 
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import { useParams, useNavigate } from "react-router-dom";
+// import { toast, ToastContainer } from "react-toastify"; 
+// import "react-toastify/dist/ReactToastify.css";
+// import PasswordChangeForm from "./PasswordChangeForm";
+// import { Tabs, Tab, Box, Typography } from "@mui/material";
+// import "./ProfilePage.css"; 
+
+// const ProfilePage = () => {
+//   const { id } = useParams();
+//   const [user, setUser] = useState({
+//     username: "",
+//     email: "",
+//     phonenumber: "",
+//     profileImage: "",
+//   });
+//   const [newProfileImage, setNewProfileImage] = useState(null);
+//   const [imagePreview, setImagePreview] = useState(null);
+//   const navigate = useNavigate();
+//   const [activeTab, setActiveTab] = useState("profile");
+
+//   useEffect(() => {
+//     axios
+//       .get(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`)
+//       .then((response) => {
+//         setUser(response.data.user);
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching user data:", error);
+//       });
+//   }, [id]);
+
+//   useEffect(() => {
+//     if (newProfileImage) {
+//       const reader = new FileReader();
+//       reader.onloadend = () => {
+//         setImagePreview(reader.result);
+//       };
+//       reader.readAsDataURL(newProfileImage);
+//     } else {
+//       setImagePreview(null);
+//     }
+//   }, [newProfileImage]);
+
+//   const handleChange = (e) => {
+//     setUser({ ...user, [e.target.name]: e.target.value });
+//   };
+
+//   const handleImageChange = (e) => {
+//     const file = e.target.files[0];
+//     setNewProfileImage(file);
+//   };
+
+//   const handleSubmit = async () => {
+//     const formData = new FormData();
+//     formData.append("username", user.username);
+//     formData.append("email", user.email);
+//     formData.append("phonenumber", user.phonenumber);
+//     if (newProfileImage) {
+//       formData.append("profileImage", newProfileImage);
+//     }
+  
+//     try {
+//       await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//         },
+//       });
+//       toast.success("User data updated successfully");
+//       setTimeout(() => {
+//         navigate(`/dashboard/${user._id}`);
+//       }, 1000);
+//     } catch (error) {
+//       toast.error("Error updating user data");
+//       console.error("Error updating user data:", error);
+//     }
+//   };
+  
+  
+
+//   const handleGoToDashboard = () => {
+//     navigate(`/dashboard/${user._id}`);
+//   };
+
+//   return (
+//     <div className="profile-page-container">
+//       <ToastContainer />
+//       <img
+//         src="/turn-left.gif"
+//         alt="Go to Dashboard"
+//         className="dashboard-button"
+//         onClick={handleGoToDashboard}
+//       />
+//       <div className="profile-container">
+//         <Tabs
+//           value={activeTab}
+//           onChange={(event, newValue) => setActiveTab(newValue)}
+//           sx={{
+//             display: "flex",
+//             justifyContent: "space-around",
+//             background: "linear-gradient(to right, #ffffff, #f8f8f8)",
+//             "& .MuiTabs-indicator": {
+//               backgroundColor: "#4caf50",
+//             },
+//             "& .MuiTabs-flexContainer": {
+//               "& .MuiTab-root": {
+//                 position: "relative",
+//                 cursor: "pointer",
+//                 padding: "10px 20px",
+//                 fontSize: "16px",
+//                 borderBottom: "2px solid transparent",
+//                 transition: "all 0.3s ease",
+//                 "&:hover": {
+//                   backgroundColor: "#f0f0f0",
+//                 },
+//                 "&.Mui-selected": {
+//                   color: "#4caf50",
+//                   fontWeight: "bold",
+//                 },
+//                 "& .MuiTab-labelIcon": {
+//                   marginRight: "5px",
+//                 },
+//               },
+//             },
+//           }}
+//         >
+//           <Tab label="Profile Page" value="profile" />
+//           <Tab label="Change Password" value="changePassword" />
+//         </Tabs>
+//         <TabPanel value="profile" activeTab={activeTab}>
+//           <div className="form-group">
+//             <label>Username:</label>
+//             <input
+//               type="text"
+//               name="username"
+//               value={user.username}
+//               onChange={handleChange}
+//             />
+//           </div>
+//           <div className="form-group">
+//             <label>Email:</label>
+//             <input
+//               type="email"
+//               name="email"
+//               value={user.email}
+//               onChange={handleChange}
+//             />
+//           </div>
+//           <div className="form-group">
+//             <label>Phone Number:</label>
+//             <input
+//               type="text"
+//               name="phonenumber"
+//               value={user.phonenumber}
+//               onChange={handleChange}
+//             />
+//           </div>
+//           <div className="form-group">
+//             <label>Profile Image:</label>
+//             {imagePreview && (
+//               <img src={imagePreview} alt="Profile" className="profile-image" />
+//             )}
+//             {!imagePreview && user.profileImage && (
+//               <img
+//                 src={user.profileImage} // Using Firebase Storage URL directly
+//                 alt="Profile"
+//                 className="profile-image"
+//               />
+//             )}
+//             <div className="custom-file-input-container">
+//               <label htmlFor="fileInput" className="custom-file-label">
+//                 <span>{newProfileImage ? newProfileImage.name : "Choose file"}</span>
+//               </label>
+//               <input
+//                 type="file"
+//                 id="fileInput"
+//                 onChange={handleImageChange}
+//                 style={{ display: "none" }}
+//               />
+//             </div>
+//           </div>
+//           <button onClick={handleSubmit}>Update</button>
+//         </TabPanel>
+//         <TabPanel value="changePassword" activeTab={activeTab}>
+//           <PasswordChangeForm />
+//         </TabPanel>
+//       </div>
+//     </div>
+//   );
+// };
+
+// function TabPanel(props) {
+//   const { value, activeTab, children } = props;
+//   return (
+//     <div role="tabpanel" hidden={activeTab !== value}>
+//       {activeTab === value && (
+//         <Box sx={{ p: 3 }}>
+//           <Typography>{children}</Typography>
+//         </Box>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default ProfilePage;
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify"; 
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PasswordChangeForm from "./PasswordChangeForm";
 import { Tabs, Tab, Box, Typography } from "@mui/material";
-import "./ProfilePage.css"; 
+import "./ProfilePage.css";
 
 const ProfilePage = () => {
   const { id } = useParams();
@@ -245,7 +452,7 @@ const ProfilePage = () => {
     axios
       .get(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`)
       .then((response) => {
-        setUser(response.data.user);
+        setUser(response.data.user); // Ensure `user.profileImage` is a valid URL
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
@@ -256,7 +463,7 @@ const ProfilePage = () => {
     if (newProfileImage) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        setImagePreview(reader.result); // Preview the new image
       };
       reader.readAsDataURL(newProfileImage);
     } else {
@@ -281,23 +488,26 @@ const ProfilePage = () => {
     if (newProfileImage) {
       formData.append("profileImage", newProfileImage);
     }
-  
+
     try {
-      await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
+      const response = await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       toast.success("User data updated successfully");
+      setUser((prevUser) => ({
+        ...prevUser,
+        profileImage: response.data.url || prevUser.profileImage, // Update user with new profile image URL
+      }));
       setTimeout(() => {
-        navigate(`/dashboard/${user._id}`);
+        navigate(`/dashboard/${id}`);
       }, 1000);
     } catch (error) {
       toast.error("Error updating user data");
       console.error("Error updating user data:", error);
     }
   };
-  
 
   const handleGoToDashboard = () => {
     navigate(`/dashboard/${user._id}`);
@@ -383,7 +593,7 @@ const ProfilePage = () => {
             )}
             {!imagePreview && user.profileImage && (
               <img
-                src={user.profileImage} // Using Firebase Storage URL directly
+                src={user.profileImage} // Displaying the Firebase Storage URL
                 alt="Profile"
                 className="profile-image"
               />

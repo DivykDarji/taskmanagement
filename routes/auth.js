@@ -6,9 +6,9 @@ const jwtUtils = require("./jwtUtils");
 const jwt = require('jsonwebtoken');
 // const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
-const firebaseApp = require("../src/firebaseConfig");
+const firebaseConfig = require("../src/firebaseConfig");
 const { getAuth } = require("firebase/auth");
-const auth = getAuth(firebaseApp);
+const auth = getAuth(firebaseConfig.firebaseApp);
 const path = require("path");
 // Import multer and other required modules for file uploads
 const multer = require("multer");
@@ -19,7 +19,7 @@ const nodemailer = require("nodemailer");
 // const { CloudinaryStorage } = require('multer-storage-cloudinary');
 // const cloudinary = require("../config/cloudinary");
 require("dotenv").config(); // Load environment variables from .env file
-const { upload, uploadToFirebase } = require('../config/multer-firebase-storage');
+const { upload } = require('../config/multer-firebase-storage');
 // const storage = new CloudinaryStorage({
 //   cloudinary: cloudinary,
 //   params: {
@@ -508,8 +508,7 @@ router.post("/users", async (req, res) => {
 //   }
 // });
 
-// Update user route handler (with Firebase Storage integration)
-router.put("/users/:id", upload.single('profileImage'), uploadToFirebase, async (req, res) => {
+router.put("/users/:id", upload.single('profileImage'), async (req, res) => {
   try {
     const { username, email, phonenumber, password, isAdmin } = req.body;
     const userId = req.params.id;
@@ -532,8 +531,8 @@ router.put("/users/:id", upload.single('profileImage'), uploadToFirebase, async 
     }
 
     // Update profile image if it's uploaded
-    if (req.file && req.file.firebaseUrl) {
-      user.profileImage = req.file.firebaseUrl;
+    if (req.file && req.file.url) {
+      user.profileImage = req.file.url;
     }
 
     await user.save();

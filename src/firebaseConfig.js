@@ -1,5 +1,6 @@
 // firebaseConfig.js
 const { initializeApp } = require('firebase/app');
+const { getStorage } = require('firebase/storage');
 
 const firebaseConfig = {
     apiKey: "AIzaSyAYTFz8ailFTyb1Pe3ZsXNPCEbuWBAv7CQ",
@@ -12,5 +13,6 @@ const firebaseConfig = {
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+const storage = getStorage(firebaseApp);
 
-module.exports = firebaseApp; // Use module.exports instead of export default
+module.exports = { firebaseApp, storage };
