@@ -501,25 +501,28 @@ router.put('/users/:id', upload.single('profileImage'), async (req, res) => {
     const file = req.file;
     let publicUrl = null;
 
-    // Handle profile image upload
     if (file) {
       const blob = bucket.file(`profileImages/${Date.now()}_${file.originalname}`);
-      const blobStream = blob.createWriteStream({
-        metadata: {
-          contentType: file.mimetype,
-        },
-      });
+      
+      await new Promise((resolve, reject) => {
+        const blobStream = blob.createWriteStream({
+          metadata: {
+            contentType: file.mimetype,
+          },
+        });
 
-      blobStream.on('error', (err) => {
-        console.error('Error uploading file:', err);
-        return res.status(500).json({ error: 'Error uploading file' });
-      });
+        blobStream.on('error', (err) => {
+          console.error('Error uploading file:', err);
+          reject(new Error('Error uploading file'));
+        });
 
-      blobStream.on('finish', () => {
-        publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media`;
-      });
+        blobStream.on('finish', () => {
+          publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media`;
+          resolve();
+        });
 
-      blobStream.end(file.buffer);
+        blobStream.end(file.buffer);
+      });
     }
 
     // Find user by ID and update profile
@@ -551,6 +554,7 @@ router.put('/users/:id', upload.single('profileImage'), async (req, res) => {
     res.status(500).json({ error: 'Error updating user data' });
   }
 });
+
 
 
 router.post('/google-login', async (req, res) => {

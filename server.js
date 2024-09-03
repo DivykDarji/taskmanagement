@@ -25,7 +25,7 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https://taskmanagement-inky.vercel.app"],
+      imgSrc: ["'self'", "data:", "https://taskmanagement-inky.vercel.app", "https://firebasestorage.googleapis.com"],
       styleSrc: ["'self'", "https:"],
     },
   })
