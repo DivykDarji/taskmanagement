@@ -58,7 +58,7 @@ router.post("/send-email", async (req, res) => {
     const { email, name } = req.body;
 
     const mailOptions = {
-      from: `"Support Team" <divydarji02@gmail.com}>`,
+      from: `"Support Team" <support@speedexam.net}>`,
       to: email,
       subject: "Support Request Received",
       html: `
@@ -206,7 +206,7 @@ router.post("/forgot-password", async (req, res) => {
     // Send email with reset link
     const resetUrl = `https://taskmanagement-inky.vercel.app/reset-password/${token}`;
     const mailOptions = {
-      from: `"Support Team" <divydarji02@gmail.com>`,
+      from: `"Support Team" <support@speedexam.net>`,
       to: user.email,
       subject: "Password Reset Request",
       html: `
