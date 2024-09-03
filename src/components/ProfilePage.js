@@ -745,7 +745,7 @@ const ProfilePage = () => {
 
       setUser((prevUser) => ({
         ...prevUser,
-        profileImage: response.data.user.profileImage || prevUser.profileImage,
+        profileImage: `${response.data.user.profileImage}?timestamp=${new Date().getTime()}` || `${prevUser.profileImage}?timestamp=${new Date().getTime()}`,
         username: response.data.user.username || prevUser.username,
         email: response.data.user.email || prevUser.email,
         phonenumber: response.data.user.phonenumber || prevUser.phonenumber,
