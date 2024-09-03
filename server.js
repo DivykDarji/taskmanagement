@@ -15,21 +15,22 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https://taskmanagement-inky.vercel.app; script-src 'self'; style-src 'self' 'https:'");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https://taskmanagement-inky.vercel.app; script-src 'self'; style-src 'self' 'https:'");
+//   next();
+// });
 
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
+      scriptSrc: ["'self'", "https://taskmanagement-inky.vercel.app"], // Adjust as needed
       imgSrc: ["'self'", "data:", "https://taskmanagement-inky.vercel.app", "https://firebasestorage.googleapis.com"],
       styleSrc: ["'self'", "https:"],
     },
   })
 );
+
 
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
