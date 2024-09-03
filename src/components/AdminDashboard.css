@@ -71,7 +71,53 @@
   color: #333;
 }
 
+/* Context Menu */
+.context-menu {
+  position: absolute;
+  top: 100%; /* Position below the profile name */
+  left: 0; /* Align to the left of the profile name container */
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+  transform: scaleY(0); /* Initially hidden */
+  transform-origin: top; /* Scale from top */
+  transition: transform 0.3s ease; /* Smooth transition for scaling */
+}
+
+.context-menu.active {
+  transform: scaleY(1); /* Show when active */
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  color: #333;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.context-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Dropdown Icon */
 .dropdown-icon {
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+  transition: transform 0.3s ease; /* Smooth rotation */
+}
+
+.dropdown-icon.rotate {
+  transform: rotate(180deg); /* Rotate when menu is active */
+}
+
+/* .dropdown-icon {
   cursor: pointer;
   font-size: 18px;
   color: #666;
@@ -81,11 +127,11 @@
   position: absolute;
   top: 100%;
   left: 20px; /* Adjust positioning as needed */
-  background-color: #fff;
+  /*background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   display: none;
-}
+/*}
 
 .context-menu.active {
   display: block;
@@ -105,7 +151,54 @@
 
 .context-menu button:hover {
   background-color: #f0f0f0;
+} */
+
+/* Context Menu */
+.context-menu {
+  position: absolute;
+  top: 100%; /* Position below the profile name */
+  left: 0; /* Align to the left of the profile name container */
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+  transform: scaleY(0); /* Initially hidden */
+  transform-origin: top; /* Scale from top */
+  transition: transform 0.3s ease; /* Smooth transition for scaling */
 }
+
+.context-menu.active {
+  transform: scaleY(1); /* Show when active */
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  color: #333;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.context-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Dropdown Icon */
+.dropdown-icon {
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+  transition: transform 0.3s ease; /* Smooth rotation */
+}
+
+.dropdown-icon.rotate {
+  transform: rotate(180deg); /* Rotate when menu is active */
+}
+
 
 /* Summary cards */
 .summary-section {

@@ -94,18 +94,17 @@ body, html {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: none;
+  opacity: 0; /* Start hidden */
+  transform: scale(0.9); /* Slightly scale down when hidden */
+  visibility: hidden; /* Hide the element */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease; /* Add transition */
   z-index: 1000;
 }
 
-.context-menu button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  text-align: left;
-  border: none;
-  background: none;
-  cursor: pointer;
+.context-menu.active {
+  opacity: 1; /* Fully visible */
+  transform: scale(1); /* Full scale */
+  visibility: visible; /* Make the element visible */
 }
 
 .context-menu-item {
@@ -125,13 +124,6 @@ body, html {
   background-color: #f0f0f0;
 }
 
-.context-menu button:hover {
-  background-color: #f0f0f0;
-}
-
-.context-menu.active {
-  display: block;
-}
 
 .error {
   color: red;
