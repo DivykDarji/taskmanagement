@@ -33,13 +33,23 @@ require("dotenv").config(); // Load environment variables from .env file
 //   },
 // });
 
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.mailtrap.io",
+//   port: 2525, // Make sure to use the correct port for Mailtrap
+//   secure: false, // Set to true if your Mailtrap server requires SSL
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.mailtrap.io",
-  port: 2525, // Make sure to use the correct port for Mailtrap
-  secure: false, // Set to true if your Mailtrap server requires SSL
+  host: 'smtp.sendgrid.net',
+  port: 587,
+  secure: false, // Set to true if using TLS/SSL
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: 'apikey',
+    pass: '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',
   },
 });
 
@@ -48,7 +58,7 @@ router.post("/send-email", async (req, res) => {
     const { email, name } = req.body;
 
     const mailOptions = {
-      from: `"Support Team" <${process.env.EMAIL_USER}>`,
+      from: `"Support Team" <divydarji02@gmail.com}>`,
       to: email,
       subject: "Support Request Received",
       html: `
@@ -196,7 +206,7 @@ router.post("/forgot-password", async (req, res) => {
     // Send email with reset link
     const resetUrl = `https://taskmanagement-inky.vercel.app/reset-password/${token}`;
     const mailOptions = {
-      from: `"Support Team" <${process.env.EMAIL_USER}>`,
+      from: `"Support Team" <divydarji02@gmail.com>`,
       to: user.email,
       subject: "Password Reset Request",
       html: `
@@ -457,43 +467,6 @@ router.post("/users", async (req, res) => {
     res.status(500).json({ error: "Error creating user" });
   }
 });
-
-// // Update user route handler
-// router.put("/users/:id", upload.single("profileImage"), async (req, res) => {
-//   try {
-//     const { username, email, phonenumber, password, isAdmin } = req.body;
-//     const userId = req.params.id;
-//     const user = await User.findById(userId);
-
-//     if (!user) {
-//       return res.status(404).json({ error: "User not found" });
-//     }
-
-//     // Update fields if they exist in the request body
-//     user.username = username || user.username;
-//     user.email = email || user.email;
-//     user.phonenumber = phonenumber || user.phonenumber;
-//     user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
-
-//     // Update password only if it's provided
-//     if (password) {
-//       const hashedPassword = await bcrypt.hash(password, 10);
-//       user.password = hashedPassword;
-//     }
-
-//     // Update profile image if it's uploaded
-//     if (req.file) {
-//       // req.file.path will have the Cloudinary URL if using Cloudinary's Multer storage
-//       user.profileImage = req.file.path;
-//     }
-
-//     await user.save();
-//     res.json({ message: "User updated successfully", user });
-//   } catch (error) {
-//     console.error("Error updating user:", error);
-//     res.status(500).json({ error: "Error updating user" });
-//   }
-// });
 
 
 router.put('/users/:id', upload.single('profileImage'), async (req, res) => {
