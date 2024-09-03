@@ -8,7 +8,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import {  FaAngleDown } from "react-icons/fa";
+import { FaAngleDown } from "react-icons/fa";
 import AddTaskPage from "./AddTaskPage";
 import "./dashboard-calendar.css";
 import { Tabs, Tab, Box, Typography, Select, MenuItem } from "@mui/material";
@@ -32,7 +32,6 @@ const Dashboard = () => {
   // eslint-disable-next-line
   const [selectedDate, setSelectedDate] = useState(new Date());
   const tasksPerPage = 5;
-  
 
   // Define fetchTasks function outside useEffect
   const fetchTasks = async () => {
@@ -52,9 +51,7 @@ const Dashboard = () => {
     }
   };
   useEffect(() => {
-
     const storedToken = localStorage.getItem("token");
-    
 
     if (!storedToken) {
       // If token or userID is not available in localStorage, navigate to login page
@@ -133,7 +130,9 @@ const Dashboard = () => {
 
     try {
       // Update task completion status in backend
-      await axios.put(`https://taskmangement-backend-v1o7.onrender.com/tasks/complete/${taskId}`);
+      await axios.put(
+        `https://taskmangement-backend-v1o7.onrender.com/tasks/complete/${taskId}`
+      );
 
       // Find the completed task and update its status in the local state
       const updatedTasks = tasks.map((task) =>
@@ -299,7 +298,9 @@ const Dashboard = () => {
   const handleDeleteTask = async (taskId) => {
     try {
       // Send a DELETE request to delete the task
-      await axios.delete(`https://taskmangement-backend-v1o7.onrender.com/tasks/${taskId}`);
+      await axios.delete(
+        `https://taskmangement-backend-v1o7.onrender.com/tasks/${taskId}`
+      );
       // Fetch the updated tasks list
       fetchTasks();
       // Close the task details modal
@@ -329,8 +330,8 @@ const Dashboard = () => {
             <img
               src={
                 userData && userData.profileImage
-                  ? `https://taskmangement-backend-v1o7.onrender.com/uploads/profileImages/${userData.profileImage}`
-                  : "/default-profile-image.jpg"
+                  ? userData.profileImage // Use the URL stored in MongoDB
+                  : "/default-profile-image.jpg" // Fallback if no image URL is provided
               }
               alt="Profile"
               className="profile-image"

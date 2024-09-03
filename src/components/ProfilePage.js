@@ -1,5 +1,3 @@
-
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import { useParams } from "react-router-dom";
@@ -22,7 +20,6 @@
 //   const [imagePreview, setImagePreview] = useState(null); // New state for image preview
 //   const navigate = useNavigate();
 //   const [activeTab, setActiveTab] = useState("profile");
-  
 
 //   useEffect(() => {
 //     // Fetch user data from backend based on the user ID
@@ -66,7 +63,7 @@
 //     if (newProfileImage) {
 //       formData.append("profileImage", newProfileImage);
 //     }
-  
+
 //     try {
 //       await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
 //         headers: {
@@ -82,15 +79,11 @@
 //       console.error("Error updating user data:", error);
 //     }
 //   };
-  
 
 //   const handleGoToDashboard = () => {
 //     navigate(`/dashboard/${user._id}`);
 //   };
 
-
-  
-  
 //   return (
 //     <div className="profile-page-container">
 //       <ToastContainer />
@@ -217,16 +210,14 @@
 
 // export default ProfilePage;
 
-
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import { useParams, useNavigate } from "react-router-dom";
-// import { toast, ToastContainer } from "react-toastify"; 
+// import { toast, ToastContainer } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 // import PasswordChangeForm from "./PasswordChangeForm";
 // import { Tabs, Tab, Box, Typography } from "@mui/material";
-// import "./ProfilePage.css"; 
+// import "./ProfilePage.css";
 
 // const ProfilePage = () => {
 //   const { id } = useParams();
@@ -281,7 +272,7 @@
 //     if (newProfileImage) {
 //       formData.append("profileImage", newProfileImage);
 //     }
-  
+
 //     try {
 //       await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
 //         headers: {
@@ -297,8 +288,6 @@
 //       console.error("Error updating user data:", error);
 //     }
 //   };
-  
-  
 
 //   const handleGoToDashboard = () => {
 //     navigate(`/dashboard/${user._id}`);
@@ -487,25 +476,29 @@ const ProfilePage = () => {
     formData.append("username", user.username);
     formData.append("email", user.email);
     formData.append("phonenumber", user.phonenumber);
-    
+
     if (newProfileImage) {
       formData.append("profileImage", newProfileImage);
     }
-    
+
     try {
-      const response = await axios.put(`https://taskmangement-backend-v1o7.onrender.com/users/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-  
+      const response = await axios.put(
+        `https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
       toast.success("User data updated successfully");
-  
+
       setUser((prevUser) => ({
         ...prevUser,
         profileImage: response.data.user.profileImage || prevUser.profileImage, // Update profile image URL
       }));
-  
+
       setTimeout(() => {
         navigate(`/dashboard/${id}`);
       }, 1000);
@@ -514,7 +507,6 @@ const ProfilePage = () => {
       console.error("Error updating user data:", error);
     }
   };
-  
 
   const handleGoToDashboard = () => {
     navigate(`/dashboard/${user._id}`);
@@ -607,7 +599,9 @@ const ProfilePage = () => {
             )}
             <div className="custom-file-input-container">
               <label htmlFor="fileInput" className="custom-file-label">
-                <span>{newProfileImage ? newProfileImage.name : "Choose file"}</span>
+                <span>
+                  {newProfileImage ? newProfileImage.name : "Choose file"}
+                </span>
               </label>
               <input
                 type="file"
@@ -641,4 +635,3 @@ function TabPanel(props) {
 }
 
 export default ProfilePage;
-;
