@@ -19,8 +19,7 @@ const nodemailer = require("nodemailer");
 // const { CloudinaryStorage } = require('multer-storage-cloudinary');
 // const cloudinary = require("../config/cloudinary");
 require("dotenv").config(); // Load environment variables from .env file
-const { upload } = require('../config/multer-firebase-storage');
-// const storage = new CloudinaryStorage({
+const { upload, uploadToFirebase } = require('../config/multer-firebase-storage'); // Importing upload and uploadToFirebase// const storage = new CloudinaryStorage({
 //   cloudinary: cloudinary,
 //   params: {
 //     folder: 'profileImages',
@@ -508,7 +507,9 @@ router.post("/users", async (req, res) => {
 //   }
 // });
 
-router.put("/users/:id", upload.single('profileImage'), async (req, res) => {
+// PUT route to update user data, including profile image
+// PUT route to update user data, including profile image
+router.put("/users/:id", upload.single('profileImage'), uploadToFirebase, async (req, res) => {
   try {
     const { username, email, phonenumber, password, isAdmin } = req.body;
     const userId = req.params.id;
@@ -531,8 +532,8 @@ router.put("/users/:id", upload.single('profileImage'), async (req, res) => {
     }
 
     // Update profile image if it's uploaded
-    if (req.file && req.file.url) {
-      user.profileImage = req.file.url;
+    if (req.file && req.file.firebaseUrl) {
+      user.profileImage = req.file.firebaseUrl;
     }
 
     await user.save();
