@@ -156,9 +156,6 @@ async function startServer() {
     res.json({ message: 'Admin route accessed successfully' });
   });
 
-  // This route may not be needed if you are handling updates in `authRoutes`
-  // app.put('/users/:id', upload.single('profileImage'), async (req, res) => { ... });
-
   app.use((err, req, res, next) => {
     console.error("Global error handler:", err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -170,3 +167,4 @@ async function startServer() {
 }
 
 startServer();
+

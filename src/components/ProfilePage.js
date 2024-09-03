@@ -448,22 +448,24 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
 
+  // Fetch user data
   useEffect(() => {
     axios
       .get(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`)
       .then((response) => {
-        setUser(response.data.user); // Ensure `user.profileImage` is a valid URL
+        setUser(response.data.user);
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
   }, [id]);
 
+  // Preview new profile image
   useEffect(() => {
     if (newProfileImage) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); // Preview the new image
+        setImagePreview(reader.result);
       };
       reader.readAsDataURL(newProfileImage);
     } else {
@@ -485,21 +487,23 @@ const ProfilePage = () => {
     formData.append("username", user.username);
     formData.append("email", user.email);
     formData.append("phonenumber", user.phonenumber);
+    
     if (newProfileImage) {
-      formData.append("profileImage", newProfileImage); // Append the new image
+      formData.append("profileImage", newProfileImage);
     }
-  
+    
     try {
-      const response = await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
+      const response = await axios.put(`https://taskmangement-backend-v1o7.onrender.com/users/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
   
       toast.success("User data updated successfully");
+  
       setUser((prevUser) => ({
         ...prevUser,
-        profileImage: response.data.url || prevUser.profileImage, // Update profile image URL
+        profileImage: response.data.user.profileImage || prevUser.profileImage, // Update profile image URL
       }));
   
       setTimeout(() => {
@@ -510,6 +514,7 @@ const ProfilePage = () => {
       console.error("Error updating user data:", error);
     }
   };
+  
 
   const handleGoToDashboard = () => {
     navigate(`/dashboard/${user._id}`);
@@ -636,3 +641,4 @@ function TabPanel(props) {
 }
 
 export default ProfilePage;
+;

@@ -497,7 +497,7 @@ router.post("/users", async (req, res) => {
 
 
 // PUT route to update user data, including profile image
-router.put('/:id', upload.single('profileImage'), async (req, res) => {
+router.put('/users/:id', upload.single('profileImage'), async (req, res) => {
   try {
     const file = req.file;
     if (!file) {
@@ -546,10 +546,11 @@ router.put('/:id', upload.single('profileImage'), async (req, res) => {
 
     blobStream.end(file.buffer);
   } catch (error) {
-    console.error('Error uploading profile image:', error);
-    res.status(500).json({ error: 'Error uploading profile image' });
+    console.error('Error updating profile image:', error);
+    res.status(500).json({ error: 'Error updating profile image' });
   }
 });
+
 
 router.post('/google-login', async (req, res) => {
   const { email } = req.body;
