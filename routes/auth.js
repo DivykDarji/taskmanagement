@@ -12,27 +12,15 @@ const auth = getAuth(firebaseConfig.firebaseApp);
 const path = require("path");
 // Import multer and other required modules for file uploads
 const multer = require("multer");
+const bucket = require('../src/firebase-config'); // Use this for Firebase Storage
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
 const crypto = require("crypto");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
-// const { CloudinaryStorage } = require('multer-storage-cloudinary');
-// const cloudinary = require("../config/cloudinary");
 require("dotenv").config(); // Load environment variables from .env file
-const { upload, uploadToFirebase } = require('../config/multer-firebase-storage'); // Importing upload and uploadToFirebase// const storage = new CloudinaryStorage({
-//   cloudinary: cloudinary,
-//   params: {
-//     folder: 'profileImages',
-//     allowed_formats: ['jpg', 'png', 'jpeg'],
-//   },
-// });
 
-// const upload = multer({ storage: storage });
-
-// Middleware for file upload
-// const upload = multer({ storage: multerMemoryStorage });
-
-// Email configuration
 
 // Email configuration
 // const transporter = nodemailer.createTransport({
@@ -507,40 +495,59 @@ router.post("/users", async (req, res) => {
 //   }
 // });
 
+
 // PUT route to update user data, including profile image
-// PUT route to update user data, including profile image
-router.put("/users/:id", upload.single('profileImage'), uploadToFirebase, async (req, res) => {
+router.put('/:id', upload.single('profileImage'), async (req, res) => {
   try {
-    const { username, email, phonenumber, password, isAdmin } = req.body;
-    const userId = req.params.id;
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Update fields if they exist in the request body
-    user.username = username || user.username;
-    user.email = email || user.email;
-    user.phonenumber = phonenumber || user.phonenumber;
-    user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
+    const blob = bucket.file(`profileImages/${Date.now()}_${file.originalname}`);
+    const blobStream = blob.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
 
-    // Update password only if it's provided
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-    }
+    blobStream.on('error', (err) => {
+      console.error('Error uploading file:', err);
+      res.status(500).json({ error: 'Error uploading file' });
+    });
 
-    // Update profile image if it's uploaded
-    if (req.file && req.file.firebaseUrl) {
-      user.profileImage = req.file.firebaseUrl;
-    }
+    blobStream.on('finish', async () => {
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+      
+      // Find user by ID and update the profile with the new image URL
+      const userId = req.params.id;
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
 
-    await user.save();
-    res.json({ message: "User updated successfully", user });
+      user.profileImage = publicUrl;
+
+      // Update other user fields
+      const { username, email, phonenumber, password, isAdmin } = req.body;
+      user.username = username || user.username;
+      user.email = email || user.email;
+      user.phonenumber = phonenumber || user.phonenumber;
+      user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
+
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+      }
+
+      await user.save();
+      res.json({ message: 'User updated successfully', user });
+    });
+
+    blobStream.end(file.buffer);
   } catch (error) {
-    console.error("Error updating user:", error);
-    res.status(500).json({ error: "Error updating user" });
+    console.error('Error uploading profile image:', error);
+    res.status(500).json({ error: 'Error uploading profile image' });
   }
 });
 

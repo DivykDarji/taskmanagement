@@ -1,7 +1,6 @@
-// firebase-storage.js
 const { getStorage } = require('firebase/storage');
-const firebaseApp = require('./firebaseConfig'); // Import the Firebase app instance
+const firebaseApp = require('./firebaseConfig'); // Ensure this is correct
 
-const storage = getStorage(firebaseApp); // Initialize Firebase Storage
+const storage = getStorage(firebaseApp);
 
-module.exports = storage; // Export the Firebase Storage instance
+module.exports = storage;

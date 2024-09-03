@@ -1,54 +1,44 @@
-// config/multer-firebase-storage.js
+const express = require('express');
+const multer = require('multer');
 const { Storage } = require('@google-cloud/storage');
-const Multer = require('multer');
 const path = require('path');
 
-// Replace with your Firebase Storage bucket name
-const bucketName = 'gs://website-portfolio-react.appspot.com';
-
-// Initialize Google Cloud Storage
-const storage = new Storage();
-const bucket = storage.bucket(bucketName);
-
-// Use memory storage in Multer to keep the file in memory before uploading
-const multerFirebaseStorage = Multer.memoryStorage();
-
-const upload = Multer({
-  storage: multerFirebaseStorage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB file size limit
+const storage = new Storage({
+  keyFilename: path.join(__dirname, '../config/serviceAccountKey.json'),
 });
+const bucket = storage.bucket('website-portfolio-react.appspot.com');
 
-// Middleware to upload file to Firebase Storage
-const uploadToFirebase = (req, res, next) => {
-  if (!req.file) return next();
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
 
-  const fileName = `profileImages/${Date.now()}-${path.basename(req.file.originalname)}`;
-  const file = bucket.file(fileName);
+const uploadToFirebase = async (req, res, next) => {
+  if (!req.file) {
+    return next(); // Proceed if no file is uploaded
+  }
 
-  const stream = file.createWriteStream({
+  const file = req.file;
+  const blob = bucket.file(`profileImages/${Date.now()}_${file.originalname}`);
+  const blobStream = blob.createWriteStream({
     metadata: {
-      contentType: req.file.mimetype,
+      contentType: file.mimetype,
     },
   });
 
-  stream.on('error', (err) => {
-    console.error('Firebase upload error:', err);
-    return res.status(500).json({ error: 'Error uploading file' });
+  blobStream.on('error', (err) => {
+    console.error('Error uploading file:', err);
+    res.status(500).json({ error: 'Error uploading file' });
   });
 
-  stream.on('finish', async () => {
-    try {
-      // Get the public URL for the file
-      const url = `https://storage.googleapis.com/${bucketName}/${fileName}`;
-      req.file.firebaseUrl = url;
-      next();
-    } catch (err) {
-      console.error('Error getting file URL:', err);
-      return res.status(500).json({ error: 'Error getting file URL' });
-    }
+  blobStream.on('finish', async () => {
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+    req.file.firebaseUrl = publicUrl; // Set the URL in req.file
+    next(); // Proceed to the next middleware
   });
 
-  stream.end(req.file.buffer);
+  blobStream.end(file.buffer);
 };
 
-module.exports = { upload, uploadToFirebase };
+module.exports = {
+  upload,
+  uploadToFirebase,
+};

@@ -486,20 +486,22 @@ const ProfilePage = () => {
     formData.append("email", user.email);
     formData.append("phonenumber", user.phonenumber);
     if (newProfileImage) {
-      formData.append("profileImage", newProfileImage);
+      formData.append("profileImage", newProfileImage); // Append the new image
     }
-
+  
     try {
       const response = await axios.put(`https://taskmangement-backend-v1o7.onrender.com/auth/users/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+  
       toast.success("User data updated successfully");
       setUser((prevUser) => ({
         ...prevUser,
-        profileImage: response.data.url || prevUser.profileImage, // Update user with new profile image URL
+        profileImage: response.data.url || prevUser.profileImage, // Update profile image URL
       }));
+  
       setTimeout(() => {
         navigate(`/dashboard/${id}`);
       }, 1000);
