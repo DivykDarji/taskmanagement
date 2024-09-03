@@ -167,7 +167,7 @@ const AddTaskPage = ({ userId, closeModal, updateTasks, task }) => {
           <input type="text" value={comments} onChange={(e) => setComments(e.target.value)} />
         </div>
         {error && <p className="error">{error}</p>}
-        <button type="submit">Add Task</button>
+        <button type="submit">{task ? 'Update Task' : 'Add Task'}</button>
       </form>
     </div>
   );

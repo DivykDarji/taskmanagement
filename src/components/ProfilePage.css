@@ -146,6 +146,28 @@ input[type="file"] {
   background-color: #45a049;
 }
 
+.update-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.update-button:hover {
+  background-color: #45a049;
+}
+
+.update-button:disabled {
+  background-color: #ccc; /* Light gray background when disabled */
+  cursor: not-allowed;
+}
+
 /* Your updated CSS for React Toastify */
 .Toastify {
   font-family: Arial, sans-serif;
@@ -211,13 +233,20 @@ input[type="file"] {
   border-radius: 50%;
 }
 
-.dashboard-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 50px; /* Adjust width as needed */
-  height: auto; /* Maintain aspect ratio */
+.loader {
+  border: 3px solid #f3f3f3; /* Light gray */
+  border-top: 3px solid #4caf50; /* Green */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 @media screen and (max-width: 768px) {
   /* Adjust styles for smaller screens */

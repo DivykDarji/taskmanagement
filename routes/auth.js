@@ -496,58 +496,59 @@ router.post("/users", async (req, res) => {
 // });
 
 
-// PUT route to update user data, including profile image
 router.put('/users/:id', upload.single('profileImage'), async (req, res) => {
   try {
     const file = req.file;
-    if (!file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+    let publicUrl = null;
+
+    // Handle profile image upload
+    if (file) {
+      const blob = bucket.file(`profileImages/${Date.now()}_${file.originalname}`);
+      const blobStream = blob.createWriteStream({
+        metadata: {
+          contentType: file.mimetype,
+        },
+      });
+
+      blobStream.on('error', (err) => {
+        console.error('Error uploading file:', err);
+        return res.status(500).json({ error: 'Error uploading file' });
+      });
+
+      blobStream.on('finish', () => {
+        publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media`;
+      });
+
+      blobStream.end(file.buffer);
     }
 
-    const blob = bucket.file(`profileImages/${Date.now()}_${file.originalname}`);
-    const blobStream = blob.createWriteStream({
-      metadata: {
-        contentType: file.mimetype,
-      },
-    });
+    // Find user by ID and update profile
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
-    blobStream.on('error', (err) => {
-      console.error('Error uploading file:', err);
-      res.status(500).json({ error: 'Error uploading file' });
-    });
-
-    blobStream.on('finish', async () => {
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(blob.name)}?alt=media`;
-      
-      // Find user by ID and update the profile with the new image URL
-      const userId = req.params.id;
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
+    // Update user profile
+    if (publicUrl) {
       user.profileImage = publicUrl;
+    }
 
-      // Update other user fields
-      const { username, email, phonenumber, password, isAdmin } = req.body;
-      user.username = username || user.username;
-      user.email = email || user.email;
-      user.phonenumber = phonenumber || user.phonenumber;
-      user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
+    const { username, email, phonenumber, password, isAdmin } = req.body;
+    user.username = username || user.username;
+    user.email = email || user.email;
+    user.phonenumber = phonenumber || user.phonenumber;
+    user.isAdmin = isAdmin !== undefined ? isAdmin : user.isAdmin;
 
-      if (password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = hashedPassword;
-      }
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
 
-      await user.save();
-      res.json({ message: 'User updated successfully', user });
-    });
-
-    blobStream.end(file.buffer);
+    await user.save();
+    res.json({ message: 'User updated successfully', user });
   } catch (error) {
-    console.error('Error updating profile image:', error);
-    res.status(500).json({ error: 'Error updating profile image' });
+    console.error('Error updating user data:', error);
+    res.status(500).json({ error: 'Error updating user data' });
   }
 });
 
