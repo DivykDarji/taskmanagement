@@ -23,42 +23,33 @@ require("dotenv").config(); // Load environment variables from .env file
 
 
 // Email configuration
-// const transporter = nodemailer.createTransport({
-//   host: "smtp-relay.gmail.com",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: process.env.EMAIL_USER, // Use environment variable
-//     pass: process.env.EMAIL_PASS, // Use environment variable
-//   },
-// });
-
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.mailtrap.io",
-//   port: 2525, // Make sure to use the correct port for Mailtrap
-//   secure: false, // Set to true if your Mailtrap server requires SSL
-//   auth: {
-//     user: process.env.EMAIL_USER,
-//     pass: process.env.EMAIL_PASS,
-//   },
-// });
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.sendgrid.net',
-  port: 587,
-  secure: false, // Set to true if using TLS/SSL
+  host: "smtp.mailtrap.io",
+  port: 2525, // Make sure to use the correct port for Mailtrap
+  secure: false, // Set to true if your Mailtrap server requires SSL
   auth: {
-    user: 'apikey',
-    pass: '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',
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
+          /*Below SMTP route is for refernnce which is actually**/
+// const transporter = nodemailer.createTransport({
+//   host: 'smtp.sendgrid.net',
+//   port: 587,
+//   secure: false, // Set to true if using TLS/SSL
+//   auth: {
+//     user: 'apikey',
+//     pass: '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',
+//   },
+// });
 
 router.post("/send-email", async (req, res) => {
   try {
     const { email, name } = req.body;
 
     const mailOptions = {
-      from: `"Support Team" <support@speedexam.net}>`,
+      from: `"Support Team" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Support Request Received",
       html: `
@@ -206,7 +197,7 @@ router.post("/forgot-password", async (req, res) => {
     // Send email with reset link
     const resetUrl = `https://taskmanagement-inky.vercel.app/reset-password/${token}`;
     const mailOptions = {
-      from: `"Support Team" <support@speedexam.net>`,
+      from: `"Support Team" ${process.env.EMAIL_USER}`,
       to: user.email,
       subject: "Password Reset Request",
       html: `
