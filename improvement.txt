@@ -1,0 +1,217 @@
+Your **Express.js API** has solid functionalities, but it's not fully secure against attacks like **SQL Injection**, **Brute Force**, and **Cross-Site Scripting (XSS)**. Even though you are using **MongoDB (NoSQL)**, you still need to apply best practices to secure your app from **NoSQL Injection** and other common web vulnerabilities.
+
+Let's go step by step through your code and point out the **security risks** and how to improve it to make it **more secure**.
+
+---
+
+### 🔴 **Security Risks Identified:**
+1. **NoSQL Injection** vulnerability in user input fields.
+2. Lack of **rate limiting** to prevent brute-force attacks.
+3. Password reset logic can be exploited if not properly validated.
+4. No **validation/sanitization** of user inputs (e.g., email, username).
+5. Storing **JWT tokens without expiration validation**.
+6. The **reset password token** and **Google login token** aren't strongly validated.
+7. **File upload to Firebase Storage** needs secure handling to avoid malicious files.
+8. No use of **Helmet.js** for setting secure HTTP headers.
+9. Missing **CORS** configuration to limit access to your API.
+10. No protection against **XSS** and **CSRF** attacks.
+
+---
+
+### ✅ **Security Improvements Checklist:**
+
+Here’s a detailed list of improvements to secure your API against **NoSQL injection**, **brute-force attacks**, and other threats.
+
+---
+
+#### **1. Input Validation and Sanitization**  
+Use **Joi** or **express-validator** to validate user inputs to prevent NoSQL injection.
+
+##### ✅ Example with Joi:
+```javascript
+const Joi = require("joi");
+
+// Signup validation schema
+const signupSchema = Joi.object({
+  email: Joi.string().email().required(),
+  username: Joi.string().min(3).max(30).required(),
+  phonenumber: Joi.string().pattern(/^[0-9]+$/).required(),
+  password: Joi.string().min(8).required(),
+  authMethod: Joi.string().valid("traditional", "firebase").required(),
+  isAdmin: Joi.boolean(),
+});
+
+// Use it in your signup route
+router.post("/signup", async (req, res) => {
+  const { error } = signupSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
+  // Your existing signup logic
+});
+```
+
+---
+
+#### **2. NoSQL Injection Protection**  
+Use **Mongoose query filters** carefully and avoid directly injecting user inputs into queries.
+
+##### ✅ Example Fix:
+```javascript
+// Replace this:
+const user = await User.findOne({ email });
+
+// With this:
+const user = await User.findOne().where("email").equals(email);
+```
+
+Alternatively, you can use **Mongoose's sanitize option**:
+```javascript
+mongoose.set("sanitizeFilter", true);
+```
+
+---
+
+#### **3. Use Rate Limiting to Prevent Brute-Force Attacks**  
+Use **express-rate-limit** to limit the number of requests to your login endpoint.
+
+##### ✅ Example:
+```javascript
+const rateLimit = require("express-rate-limit");
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 login requests per windowMs
+  message: "Too many login attempts, please try again later",
+});
+
+router.post("/login", loginLimiter, async (req, res) => {
+  // Your login logic
+});
+```
+
+---
+
+#### **4. Use Helmet for Secure HTTP Headers**  
+Helmet helps secure your app by setting various HTTP headers.
+
+##### ✅ Example:
+```javascript
+const helmet = require("helmet");
+
+app.use(helmet());
+```
+
+---
+
+#### **5. Enable CORS with Restrictions**  
+Use **CORS** to control which domains can access your API.
+
+##### ✅ Example:
+```javascript
+const cors = require("cors");
+
+const corsOptions = {
+  origin: ["https://your-frontend-domain.com"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+```
+
+---
+
+#### **6. Use Stronger JWT Token Handling**  
+Your **JWT token** logic should include expiration validation.
+
+##### ✅ Example:
+```javascript
+const jwt = require("jsonwebtoken");
+
+function generateToken(payload) {
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
+}
+
+function verifyToken(token) {
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    return null;
+  }
+}
+```
+
+---
+
+#### **7. Secure File Uploads to Firebase Storage**  
+Ensure uploaded files are validated and scanned for malicious content before storing them.
+
+##### ✅ Example:
+```javascript
+const fileFilter = (req, file, cb) => {
+  // Allow only image files
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed"), false);
+  }
+};
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: fileFilter,
+});
+```
+
+---
+
+#### **8. Password Reset Token Security**  
+Your password reset tokens should be hashed before storing them in the database.
+
+##### ✅ Example:
+```javascript
+const crypto = require("crypto");
+
+const resetToken = crypto.randomBytes(20).toString("hex");
+const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+user.resetPasswordToken = hashedToken;
+user.resetPasswordExpires = Date.now() + 600000; // 10 minutes
+await user.save();
+```
+
+---
+
+#### **9. Prevent XSS and CSRF Attacks**  
+Use **xss-clean** to sanitize input and **csurf** for CSRF protection.
+
+##### ✅ Example:
+```javascript
+const xss = require("xss-clean");
+const csurf = require("csurf");
+
+app.use(xss());
+app.use(csurf());
+```
+
+---
+
+#### **10. Use Environment Variables for Secrets**  
+Ensure your JWT secret, Firebase credentials, and email credentials are securely stored in the `.env` file.
+
+---
+
+### ✅ **Updated Code with Security Enhancements**
+
+Here’s how to apply the improvements:
+1. **Input validation with Joi**
+2. **Rate limiting**
+3. **JWT expiration**
+4. **Helmet for HTTP headers**
+5. **CORS configuration**
+6. **File upload validation**
+7. **Secure password reset tokens**
+
+---
+
+Would you like me to update your full code with these improvements? 😊
